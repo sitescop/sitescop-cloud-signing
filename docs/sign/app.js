@@ -40,6 +40,76 @@
     return parts[2] + '/' + parts[1] + '/' + parts[0];
   }
 
+  function companyContact(agreement) {
+    const c = cfg();
+    return {
+      phone: (agreement && agreement.companyPhone) || c.supportPhone || '',
+      website: (agreement && agreement.companyWebsite) || c.supportWebsite || '',
+      email: (agreement && agreement.companyEmail) || c.supportEmail || '',
+      abn: (agreement && agreement.companyAbn) || c.supportAbn || '',
+      name: (agreement && agreement.companyName) || 'SiteScop Inspections',
+    };
+  }
+
+  function websiteHref(website) {
+    const trimmed = String(website || '').trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return 'https://' + trimmed.replace(/^\/\//, '');
+  }
+
+  function phoneHref(phone) {
+    const digits = String(phone || '').replace(/[^\d+]/g, '');
+    return digits ? 'tel:' + digits : '';
+  }
+
+  function renderPortalFooter(agreement) {
+    const contact = companyContact(agreement);
+    const parts = [];
+    if (contact.phone) {
+      parts.push(
+        '<a href="' +
+          escapeHtml(phoneHref(contact.phone)) +
+          '">' +
+          escapeHtml(contact.phone) +
+          '</a>',
+      );
+    }
+    if (contact.email) {
+      parts.push(
+        '<a href="mailto:' +
+          escapeHtml(contact.email) +
+          '">' +
+          escapeHtml(contact.email) +
+          '</a>',
+      );
+    }
+    if (contact.website) {
+      parts.push(
+        '<a href="' +
+          escapeHtml(websiteHref(contact.website)) +
+          '" target="_blank" rel="noopener noreferrer">' +
+          escapeHtml(contact.website) +
+          '</a>',
+      );
+    }
+    if (contact.abn) {
+      parts.push('<span>ABN ' + escapeHtml(contact.abn) + '</span>');
+    }
+    if (!parts.length) return '';
+    return (
+      '<footer class="portal-footer">' +
+      '<p class="portal-footer-title">Questions about this agreement?</p>' +
+      '<p class="portal-footer-contact">' +
+      parts.join('<span class="portal-footer-sep">·</span>') +
+      '</p>' +
+      '<p class="portal-footer-note">Contact ' +
+      escapeHtml(contact.name) +
+      ' if you need help before signing.</p>' +
+      '</footer>'
+    );
+  }
+
   async function fetchPendingAgreement() {
     let res;
     try {
@@ -110,19 +180,26 @@
 
   function renderError(message) {
     setAppContent(
-      '<div class="wrap"><div class="card center"><p class="error">' + escapeHtml(message) + '</p></div></div>',
+      '<div class="wrap"><div class="card center"><p class="error">' +
+        escapeHtml(message) +
+        '</p></div>' +
+        renderPortalFooter(null) +
+        '</div>',
     );
   }
 
-  function renderSuccess(agreementNumber) {
+  function renderSuccess(agreementNumber, agreement) {
     setAppContent(
       '<div class="wrap"><div class="card center">' +
-      '<div class="success-icon">✓</div>' +
-      '<h1>Agreement signed</h1>' +
-      '<p class="muted">Thank you. Agreement <strong>' +
-      escapeHtml(agreementNumber) +
-      '</strong> has been submitted securely.</p>' +
-      '</div></div>',
+        '<div class="success-icon">✓</div>' +
+        '<h1>Agreement signed</h1>' +
+        '<p class="muted">Thank you. Agreement <strong>' +
+        escapeHtml(agreementNumber) +
+        '</strong> has been submitted securely.</p>' +
+        '<p class="muted">We will be in touch shortly regarding your inspection.</p>' +
+        '</div>' +
+        renderPortalFooter(agreement) +
+        '</div>',
     );
   }
 
@@ -235,9 +312,10 @@
 
   function renderProgressBar(state) {
     const steps = [
-      { id: 'overview', label: 'Read Agreement' },
-      { id: 'terms', label: 'Terms & Conditions' },
-      { id: 'privacy', label: 'Privacy Policy' },
+      { id: 'overview', label: 'Agreement' },
+      { id: 'terms', label: 'Terms' },
+      { id: 'privacy', label: 'Privacy' },
+      { id: 'declaration', label: 'Declaration' },
       { id: 'signature', label: 'Signature' },
     ];
 
@@ -334,14 +412,14 @@
       '<span class="accordion-title-wrap">' +
       '<p class="accordion-title">Sign agreement</p>' +
       '<p class="accordion-subtitle">' +
-      (locked ? 'Read the Privacy Policy above to enable signing' : 'Enter your name and signature below') +
+      (locked ? 'Read the Client Declaration above to enable signing' : 'Enter your name and signature below') +
       '</p>' +
       '</span>' +
       '</div>' +
       '<div class="sign-section-body">' +
       '<p class="sign-lock-notice" id="sign-lock-notice"' +
       (locked ? '' : ' hidden') +
-      '>Please open the Privacy Policy section above before signing.</p>' +
+      '>Please open the Client Declaration section above before signing.</p>' +
       '<div id="sign-form">' +
       '<div id="form-error" class="error" hidden></div>' +
       '<label class="field">Full name<input type="text" id="signature-name" autocomplete="name"' +
@@ -369,7 +447,7 @@
 
   function unlockSignatureSection(state, hint) {
     state.signatureUnlocked = true;
-    state.completed.privacy = true;
+    state.completed.declaration = true;
     state.active = 'signature';
     const signSection = document.getElementById('sign-section');
     if (signSection) {
@@ -414,7 +492,9 @@
         });
         if (section) {
           if (matchesSection(section, 'term')) state.completed.terms = true;
-          if (matchesSection(section, 'privacy')) {
+          if (matchesSection(section, 'privacy')) state.completed.privacy = true;
+          if (matchesSection(section, 'declar')) {
+            state.completed.declaration = true;
             unlockSignatureSection(state, hint);
           }
         }
@@ -425,6 +505,7 @@
           return s.id === target.dataset.sectionId;
         });
         if (section && matchesSection(section, 'privacy')) state.active = 'privacy';
+        else if (section && matchesSection(section, 'declar')) state.active = 'declaration';
         else if (section && matchesSection(section, 'term')) state.active = 'terms';
         else state.active = 'overview';
       }
@@ -478,10 +559,10 @@
 
   function updateProgressBar(state) {
     state.completed.overview = true;
-    if (state.completed.privacy) state.signatureUnlocked = true;
+    if (state.completed.declaration) state.signatureUnlocked = true;
 
     const steps = document.querySelectorAll('.progress-step');
-    const order = ['overview', 'terms', 'privacy', 'signature'];
+    const order = ['overview', 'terms', 'privacy', 'declaration', 'signature'];
     steps.forEach(function (el, index) {
       const stepId = order[index];
       el.classList.toggle('is-complete', Boolean(state.completed[stepId]));
@@ -502,12 +583,12 @@
     const sections = agreement.legalSections.sections;
     const progressState = {
       active: 'overview',
-      completed: { overview: true, terms: false, privacy: false, signature: false },
+      completed: { overview: true, terms: false, privacy: false, declaration: false, signature: false },
       signatureUnlocked: false,
     };
 
     const signBlock = agreement.canSign
-      ? '<p class="accordion-hint" id="accordion-hint">Please read each section. Your signature unlocks after you open the Privacy Policy.</p>' +
+      ? '<p class="accordion-hint" id="accordion-hint">Please read each section. Your signature unlocks after you open the Client Declaration.</p>' +
         '<div class="accordion">' +
         renderLegalAccordion(sections, 0) +
         '</div>' +
@@ -546,6 +627,7 @@
       formatDate(agreement.agreementDate) +
       '</div></div></div></div>' +
       signBlock +
+      renderPortalFooter(agreement) +
       '</div>',
     );
 
@@ -594,7 +676,7 @@
             declarationsAccepted: true,
           }),
         });
-        renderSuccess(pending.agreementNumber);
+        renderSuccess(pending.agreementNumber, pending.publicView);
       } catch (e) {
         formError.textContent = e.message || 'Signing failed';
         formError.hidden = false;

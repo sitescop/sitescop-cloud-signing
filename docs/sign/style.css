@@ -111,15 +111,15 @@ body {
 }
 
 .progress-step .step-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 600;
   line-height: 1.2;
-  max-width: 80px;
+  max-width: 64px;
 }
 
 @media (min-width: 480px) {
   .progress-step .step-label {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     max-width: none;
   }
 }
@@ -720,4 +720,49 @@ button:active:not(:disabled) {
 
 .accordion-hint.is-hidden {
   display: none;
+}
+
+/* ── Client contact footer ── */
+.portal-footer {
+  margin-top: 24px;
+  padding: 20px 18px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.portal-footer-title {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.portal-footer-contact {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.portal-footer-contact a {
+  color: var(--primary-light);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.portal-footer-contact a:hover {
+  text-decoration: underline;
+}
+
+.portal-footer-sep {
+  margin: 0 8px;
+  color: var(--muted);
+}
+
+.portal-footer-note {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
 }
