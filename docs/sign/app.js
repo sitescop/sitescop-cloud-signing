@@ -489,19 +489,19 @@
       ' · ' +
       escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
       '</p>' +
-      '<div class="grid" style="margin-top:16px">' +
-      '<div><div class="label">Client</div><div>' +
+      '<div class="client-details">' +
+      '<div class="detail-item"><div class="label">Client</div><div class="detail-value">' +
       escapeHtml(agreement.clientName) +
-      '</div><div class="muted">' +
+      '</div><div class="detail-sub">' +
       escapeHtml(agreement.clientEmail) +
       '</div></div>' +
-      '<div><div class="label">Property</div><div>' +
+      '<div class="detail-item detail-item-wide"><div class="label">Property</div><div class="detail-value">' +
       escapeHtml(agreement.propertyAddress) +
       '</div></div>' +
-      '<div><div class="label">Total (inc. GST)</div><div class="price">' +
+      '<div class="detail-item"><div class="label">Total (inc. GST)</div><div class="detail-value price">' +
       formatAud(agreement.totalCents) +
       '</div></div>' +
-      '<div><div class="label">Agreement date</div><div>' +
+      '<div class="detail-item"><div class="label">Agreement date</div><div class="detail-value">' +
       formatDate(agreement.agreementDate) +
       '</div></div></div></div>' +
       signBlock +
