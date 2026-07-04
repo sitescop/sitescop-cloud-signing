@@ -5,7 +5,7 @@
   "publicView": {
     "id": "bb7656bb-dc90-468d-935f-ae6f5e868c7f",
     "agreementNumber": "AGR-2026-0001",
-    "status": "SENT",
+    "status": "VIEWED",
     "inspectionType": "COMBINED",
     "companyName": "Sitescop PTY LTD",
     "clientName": "mike mago",
@@ -46,7 +46,7 @@
     },
     "canSign": true
   },
-  "sentAt": "2026-07-04T13:34:36.756Z",
+  "sentAt": "2026-07-04T13:34:39.784Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/ba05f252e32f24182702bf5a1bc24fd4fba256094fc011fd"
   }
