@@ -471,6 +471,73 @@ h1 {
   margin-bottom: 0;
 }
 
+.accordion-item.is-open .accordion-body {
+  cursor: pointer;
+}
+
+.accordion-close-hint {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.accordion-close-hint[hidden] {
+  display: none;
+}
+
+/* ── Signature section (always open) ── */
+.sign-section {
+  background: var(--surface);
+  border: 2px solid rgba(27, 67, 50, 0.35);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.sign-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--primary-soft);
+  border-bottom: 1px solid var(--border);
+}
+
+.sign-section-body {
+  padding: 18px;
+}
+
+.sign-section.is-locked .sign-section-body {
+  opacity: 0.65;
+}
+
+.sign-section.is-locked .sig-wrap,
+.sign-section.is-locked input,
+.sign-section.is-locked button,
+.sign-section.is-locked .checkbox {
+  pointer-events: none;
+}
+
+.sign-lock-notice {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid rgba(212, 160, 23, 0.35);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sign-lock-notice[hidden] {
+  display: none;
+}
+
 /* ── Signature form ── */
 .sign-card .accordion-body {
   padding-top: 4px;

@@ -303,17 +303,17 @@
           '<p class="accordion-title">' +
           escapeHtml(s.title) +
           '</p>' +
-          '<p class="accordion-subtitle">Tap to ' +
-          (isOpen ? 'collapse' : 'read') +
+          '<p class="accordion-subtitle">Tap header or anywhere below to ' +
+          (isOpen ? 'close' : 'read') +
           '</p>' +
           '</span>' +
           chevronSvg() +
           '</button>' +
           '<div class="accordion-panel">' +
           '<div class="accordion-panel-inner">' +
-          '<div class="accordion-body"><p>' +
+          '<div class="accordion-body" data-accordion-body="true"><p>' +
           escapeHtml(s.content) +
-          '</p></div>' +
+          '</p><p class="accordion-close-hint">Tap anywhere in this section to close</p></div>' +
           '</div>' +
           '</div>' +
           '</div>'
@@ -322,42 +322,69 @@
       .join('');
   }
 
-  function renderSignatureAccordion(locked) {
+  function renderSignatureSection(locked) {
     return (
-      '<div class="accordion-item sign-card' +
+      '<div class="sign-section' +
       (locked ? ' is-locked' : '') +
-      '" id="sign-accordion" data-accordion-signature="true">' +
-      '<button type="button" class="accordion-header" aria-expanded="false" ' +
-      (locked ? 'disabled' : '') +
-      '>' +
+      '" id="sign-section">' +
+      '<div class="sign-section-header">' +
       '<span class="accordion-icon">' +
       signatureIconSvg() +
       '</span>' +
       '<span class="accordion-title-wrap">' +
       '<p class="accordion-title">Sign agreement</p>' +
       '<p class="accordion-subtitle">' +
-      (locked ? 'Read the privacy policy first' : 'Enter your name and signature') +
+      (locked ? 'Read the Privacy Policy above to enable signing' : 'Enter your name and signature below') +
       '</p>' +
       '</span>' +
-      chevronSvg() +
-      '</button>' +
-      '<div class="accordion-panel">' +
-      '<div class="accordion-panel-inner">' +
-      '<div class="accordion-body" id="sign-form">' +
+      '</div>' +
+      '<div class="sign-section-body">' +
+      '<p class="sign-lock-notice" id="sign-lock-notice"' +
+      (locked ? '' : ' hidden') +
+      '>Please open the Privacy Policy section above before signing.</p>' +
+      '<div id="sign-form">' +
       '<div id="form-error" class="error" hidden></div>' +
-      '<label class="field">Full name<input type="text" id="signature-name" autocomplete="name" /></label>' +
+      '<label class="field">Full name<input type="text" id="signature-name" autocomplete="name"' +
+      (locked ? ' disabled' : '') +
+      ' /></label>' +
       '<p class="label">Draw your signature</p>' +
       '<div class="sig-wrap"><canvas id="signature-canvas"></canvas></div>' +
-      '<div class="sig-actions"><button type="button" class="btn-secondary" id="clear-sig">Clear signature</button></div>' +
-      '<label class="checkbox"><input type="checkbox" id="accepted" />' +
+      '<div class="sig-actions"><button type="button" class="btn-secondary" id="clear-sig"' +
+      (locked ? ' disabled' : '') +
+      '>Clear signature</button></div>' +
+      '<label class="checkbox"><input type="checkbox" id="accepted"' +
+      (locked ? ' disabled' : '') +
+      ' />' +
       '<span>I have read and accept the terms, scope, limitations, privacy policy, and client declaration.</span></label>' +
       '<button type="button" class="btn-primary" id="submit-btn" disabled>Sign and submit</button>' +
-      '</div></div></div></div></div>'
+      '</div></div></div>'
     );
   }
 
+  function isInteractiveClick(target) {
+    return Boolean(
+      target.closest('a, button, input, textarea, select, label, canvas, .sig-wrap, .sig-actions, .checkbox'),
+    );
+  }
+
+  function unlockSignatureSection(state, hint) {
+    state.signatureUnlocked = true;
+    state.completed.privacy = true;
+    state.active = 'signature';
+    const signSection = document.getElementById('sign-section');
+    if (signSection) {
+      signSection.classList.remove('is-locked');
+      signSection.querySelectorAll('input, button').forEach(function (el) {
+        if (el.id !== 'submit-btn') el.disabled = false;
+      });
+    }
+    const lockNotice = document.getElementById('sign-lock-notice');
+    if (lockNotice) lockNotice.hidden = true;
+    if (hint) hint.classList.add('is-hidden');
+  }
+
   function setupAccordion(state, sections, onProgressChange) {
-    const items = Array.from(document.querySelectorAll('.accordion-item'));
+    const items = Array.from(document.querySelectorAll('.accordion-item[data-section-id]'));
     const hint = document.getElementById('accordion-hint');
 
     function setAccordionOpen(target) {
@@ -367,9 +394,13 @@
         const header = item.querySelector('.accordion-header');
         if (header) header.setAttribute('aria-expanded', isTarget ? 'true' : 'false');
         const subtitle = item.querySelector('.accordion-subtitle');
-        if (subtitle && !item.dataset.accordionSignature) {
-          subtitle.textContent = isTarget ? 'Tap to collapse' : 'Tap to read';
+        if (subtitle) {
+          subtitle.textContent = isTarget
+            ? 'Tap header or anywhere below to close'
+            : 'Tap header or anywhere below to read';
         }
+        const closeHint = item.querySelector('.accordion-close-hint');
+        if (closeHint) closeHint.hidden = !isTarget;
       });
 
       if (!target) {
@@ -384,19 +415,12 @@
         if (section) {
           if (matchesSection(section, 'term')) state.completed.terms = true;
           if (matchesSection(section, 'privacy')) {
-            state.completed.privacy = true;
-            state.signatureUnlocked = true;
-            const signAccordion = document.getElementById('sign-accordion');
-            if (signAccordion) signAccordion.classList.remove('is-locked');
-            if (hint) hint.classList.add('is-hidden');
+            unlockSignatureSection(state, hint);
           }
         }
       }
 
-      if (target.dataset.accordionSignature === 'true') {
-        state.completed.signature = true;
-        state.active = 'signature';
-      } else if (target.dataset.sectionId) {
+      if (target.dataset.sectionId) {
         const section = sections.find(function (s) {
           return s.id === target.dataset.sectionId;
         });
@@ -410,25 +434,42 @@
 
     items.forEach(function (item) {
       const header = item.querySelector('.accordion-header');
-      if (!header || item.classList.contains('is-locked')) return;
-      header.addEventListener('click', function () {
-        if (item.classList.contains('is-open')) {
+      const body = item.querySelector('[data-accordion-body]');
+
+      if (header) {
+        header.addEventListener('click', function () {
+          if (item.classList.contains('is-open')) {
+            setAccordionOpen(null);
+            return;
+          }
+          setAccordionOpen(item);
+        });
+      }
+
+      if (body) {
+        body.addEventListener('click', function (e) {
+          if (!item.classList.contains('is-open')) return;
+          if (isInteractiveClick(e.target)) return;
           setAccordionOpen(null);
-          return;
-        }
-        setAccordionOpen(item);
-        if (item.id === 'sign-accordion') {
-          setTimeout(function () {
-            item.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 120);
-        }
-      });
+        });
+      }
+    });
+
+    items.forEach(function (item) {
+      const closeHint = item.querySelector('.accordion-close-hint');
+      if (closeHint) closeHint.hidden = !item.classList.contains('is-open');
     });
 
     document.querySelectorAll('[data-progress-step="signature"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        const signAccordion = document.getElementById('sign-accordion');
-        if (signAccordion && state.signatureUnlocked) setAccordionOpen(signAccordion);
+        if (!state.signatureUnlocked) return;
+        state.completed.signature = true;
+        state.active = 'signature';
+        onProgressChange();
+        const signSection = document.getElementById('sign-section');
+        if (signSection) {
+          signSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
     });
 
@@ -453,7 +494,7 @@
       if (dot) dot.textContent = state.completed[stepId] ? '✓' : String(index + 1);
     });
 
-    const signAccordion = document.getElementById('sign-accordion');
+    const signAccordion = document.getElementById('sign-section');
     if (signAccordion) signAccordion.classList.toggle('is-locked', !state.signatureUnlocked);
   }
 
@@ -469,8 +510,8 @@
       ? '<p class="accordion-hint" id="accordion-hint">Please read each section. Your signature unlocks after you open the Privacy Policy.</p>' +
         '<div class="accordion">' +
         renderLegalAccordion(sections, 0) +
-        renderSignatureAccordion(true) +
-        '</div>'
+        '</div>' +
+        renderSignatureSection(true)
       : '<div class="card center"><p class="muted">This agreement is already ' +
         escapeHtml(agreement.status.toLowerCase()) +
         '.</p></div>';
