@@ -1,4 +1,6 @@
-/* SiteScop V6 — GitHub Cloud Signing (GitHub Pages client portal) */
+/* SiteScop V6 — GitHub Cloud Signing (GitHub Pages client portal)
+ * Reads agreement data from public raw GitHub URLs.
+ * Submits signatures via the SiteScop desktop signing relay (no secrets in browser). */
 (function () {
   'use strict';
 
@@ -7,18 +9,25 @@
 
   function cfg() {
     const c = window.SITESCOP_SIGN_CONFIG;
-    if (!c || !c.owner || !c.repo || !c.token) {
+    if (!c || !c.owner || !c.repo) {
       throw new Error('Missing config.js — copy config.example.js to config.js on GitHub.');
     }
     return c;
   }
 
-  function ghHeaders(c) {
-    return {
-      Authorization: 'Bearer ' + c.token,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-    };
+  function rawGitHubUrl(path) {
+    const c = cfg();
+    const branch = c.branch || 'main';
+    return (
+      'https://raw.githubusercontent.com/' +
+      encodeURIComponent(c.owner) +
+      '/' +
+      encodeURIComponent(c.repo) +
+      '/' +
+      encodeURIComponent(branch) +
+      '/' +
+      path
+    );
   }
 
   function formatAud(cents) {
@@ -31,88 +40,66 @@
     return parts[2] + '/' + parts[1] + '/' + parts[0];
   }
 
-  function encodeBase64Utf8(text) {
-    return btoa(unescape(encodeURIComponent(text)));
-  }
-
-  async function parseGitHubError(res) {
-    try {
-      const body = await res.json();
-      return body.message || 'GitHub request failed (' + res.status + ')';
-    } catch {
-      return 'GitHub request failed (' + res.status + ')';
-    }
-  }
-
-  async function ghGetJson(path) {
-    const c = cfg();
-    const branch = c.branch || 'main';
-    const url =
-      'https://api.github.com/repos/' +
-      encodeURIComponent(c.owner) +
-      '/' +
-      encodeURIComponent(c.repo) +
-      '/contents/' +
-      path +
-      '?ref=' +
-      encodeURIComponent(branch);
-
+  async function fetchPendingAgreement() {
     let res;
     try {
-      res = await fetch(url, {
-        headers: { ...ghHeaders(c), Accept: 'application/vnd.github.raw' },
-      });
+      res = await fetch(rawGitHubUrl('agreements/pending/' + token + '.json'));
     } catch {
       throw new Error('Network error — could not reach GitHub.');
     }
-
     if (res.status === 404) return null;
-    if (!res.ok) throw new Error(await parseGitHubError(res));
-
-    const text = await res.text();
-    return JSON.parse(text);
+    if (!res.ok) throw new Error('Could not load agreement from GitHub (' + res.status + ').');
+    return res.json();
   }
 
-  async function ghPutJson(path, payload, message) {
-    const c = cfg();
-    const branch = c.branch || 'main';
-    const baseUrl =
-      'https://api.github.com/repos/' +
-      encodeURIComponent(c.owner) +
-      '/' +
-      encodeURIComponent(c.repo) +
-      '/contents/' +
-      path;
+  function submitEndpoints(pending) {
+    const endpoints = [];
+    const relay = pending && pending.submitEndpoints;
+    if (relay && relay.public) endpoints.push(relay.public);
+    if (relay && relay.lan) endpoints.push(relay.lan);
+    return endpoints;
+  }
 
-    let sha;
-    try {
-      const meta = await fetch(baseUrl + '?ref=' + encodeURIComponent(branch), {
-        headers: ghHeaders(c),
-      });
-      if (meta.ok) sha = (await meta.json()).sha;
-    } catch {
-      throw new Error('Network error — could not reach GitHub.');
-    }
-
-    const body = {
-      message: message,
-      content: encodeBase64Utf8(JSON.stringify(payload, null, 2)),
-      branch: branch,
-    };
-    if (sha) body.sha = sha;
-
+  async function relayRequest(baseUrl, suffix, options) {
+    const url = baseUrl.replace(/\/$/, '') + suffix;
     let res;
     try {
-      res = await fetch(baseUrl, {
-        method: 'PUT',
-        headers: { ...ghHeaders(c), 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+      res = await fetch(url, options);
     } catch {
-      throw new Error('Network error — could not save signature to GitHub.');
+      throw new Error('Network error — could not reach the SiteScop signing relay.');
+    }
+    if (res.status === 204) return null;
+    let body = null;
+    try {
+      body = await res.json();
+    } catch {
+      body = null;
+    }
+    if (!res.ok) {
+      const message = (body && body.error) || 'Signing relay request failed (' + res.status + ').';
+      throw new Error(message);
+    }
+    return body;
+  }
+
+  async function relayWithFallback(pending, suffix, options) {
+    const endpoints = submitEndpoints(pending);
+    if (!endpoints.length) {
+      throw new Error(
+        'This agreement has no secure signing relay. Ask your inspector to re-send the link from SiteScop.',
+      );
     }
 
-    if (!res.ok) throw new Error(await parseGitHubError(res));
+    let lastError = null;
+    for (let i = 0; i < endpoints.length; i += 1) {
+      try {
+        return await relayRequest(endpoints[i], suffix, options);
+      } catch (e) {
+        lastError = e;
+        if (i === endpoints.length - 1) throw e;
+      }
+    }
+    throw lastError || new Error('Could not reach the SiteScop signing relay.');
   }
 
   function renderError(message) {
@@ -127,7 +114,7 @@
       '<h1>Agreement signed</h1>' +
       '<p class="muted">Thank you. Agreement <strong>' +
       escapeHtml(agreementNumber) +
-      '</strong> has been submitted via GitHub Cloud Signing.</p>' +
+      '</strong> has been submitted securely.</p>' +
       '</div></div>';
   }
 
@@ -294,18 +281,15 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting…';
       try {
-        const payload = {
-          token: token,
-          signatureName: nameInput.value.trim(),
-          signatureData: pad.toDataUrl(),
-          declarationsAccepted: true,
-          signedAt: new Date().toISOString(),
-        };
-        await ghPutJson(
-          'agreements/signed/' + token + '.json',
-          payload,
-          'SiteScop Cloud Signing: client signed ' + pending.agreementNumber,
-        );
+        await relayWithFallback(pending, '', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            signatureName: nameInput.value.trim(),
+            signatureData: pad.toDataUrl(),
+            declarationsAccepted: true,
+          }),
+        });
         renderSuccess(pending.agreementNumber);
       } catch (e) {
         formError.textContent = e.message || 'Signing failed';
@@ -324,21 +308,17 @@
     }
 
     try {
-      const pending = await ghGetJson('agreements/pending/' + token + '.json');
+      const pending = await fetchPendingAgreement();
       if (!pending || !pending.publicView) {
         renderError('This agreement link is invalid or has expired.');
         return;
       }
 
-      void ghPutJson(
-        'agreements/viewed/' + token + '.json',
-        { token: token, viewedAt: new Date().toISOString() },
-        'SiteScop Cloud Signing: agreement viewed',
-      ).catch(function () {});
+      void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
       renderAgreement(pending.publicView, pending);
     } catch (e) {
-      renderError(e.message || 'Could not load agreement from GitHub.');
+      renderError(e.message || 'Could not load agreement.');
     }
   }
 

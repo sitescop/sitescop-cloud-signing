@@ -1,1 +1,2 @@
-docs/sign/config.js
+# Public config.js contains no secrets and may be committed.
+# Legacy: if you previously stored a PAT in config.js, revoke that token immediately.
