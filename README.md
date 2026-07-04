@@ -40,7 +40,8 @@ agreements/
 
 - [Security limitations](./SECURITY-LIMITATIONS.md)
 - [End-to-end test checklist](./E2E-TEST.md)
-- [Future improvements (hosted API migration)](https://github.com/sitescop/sitescop-v6/blob/main/docs/GITHUB-CLOUD-SIGNING-FUTURE-IMPROVEMENTS.md) — in SiteScop V6 repo
+- [Operations guide (SiteScop V6)](https://github.com/sitescop/sitescop-v6/blob/main/docs/GITHUB-CLOUD-SIGNING-OPERATIONS.md) — daily workflow, troubleshooting, sign-off
+- [Future improvements (hosted API migration)](https://github.com/sitescop/sitescop-v6/blob/main/docs/GITHUB-CLOUD-SIGNING-FUTURE-IMPROVEMENTS.md)
 
 ## Security reminder
 

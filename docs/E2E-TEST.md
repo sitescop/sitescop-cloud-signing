@@ -95,3 +95,28 @@ All of the following must be true:
 3. SiteScop records VIEWED and SIGNED status.
 4. Signed JSON appears in GitHub repo.
 5. No PAT visible in browser or public repo files.
+
+---
+
+## Phase sign-off (V6 — July 2026)
+
+**Status: PASSED** — End-to-end workflow validated in production configuration.
+
+| Criterion | Result |
+|-----------|--------|
+| GitHub Pages portal live | ✓ |
+| Secure portal (no PAT in browser) | ✓ |
+| SiteScop Test Connection | ✓ |
+| Pending JSON upload on Send | ✓ |
+| Client signing (same Wi‑Fi) | ✓ |
+| VIEWED / SIGNED sync to desktop | ✓ |
+| Signed/viewed JSON on GitHub | ✓ |
+| Privacy policy content (building) | ✓ |
+| Portal UI (accordion, progress, mobile) | ✓ |
+| Windows installer build | ✓ |
+
+**Operator reference:** SiteScop V6 `docs/GITHUB-CLOUD-SIGNING-OPERATIONS.md`
+
+**Known phase limits:** Same Wi‑Fi required; ~60s GitHub poll delay; public pending JSON. See [SECURITY-LIMITATIONS.md](./SECURITY-LIMITATIONS.md).
+
+**Next phase (deferred):** Hosted signing API — see Future Improvements doc in SiteScop V6 repo.
