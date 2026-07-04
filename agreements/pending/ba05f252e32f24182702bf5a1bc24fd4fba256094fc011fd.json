@@ -5,7 +5,7 @@
   "publicView": {
     "id": "bb7656bb-dc90-468d-935f-ae6f5e868c7f",
     "agreementNumber": "AGR-2026-0001",
-    "status": "SENT",
+    "status": "VIEWED",
     "inspectionType": "COMBINED",
     "companyName": "Sitescop PTY LTD",
     "clientName": "mike mago",
@@ -35,7 +35,7 @@
         {
           "id": "privacy-policy",
           "title": "Privacy Policy",
-          "content": ""
+          "content": "Privacy Policy\n\nSiteScop Pty Ltd is committed to protecting the privacy of our\nclients and handling personal information in accordance with\nthe Privacy Act 1988 (Cth) and the Australian Privacy\nPrinciples (APPs).\n\nThis Privacy Policy explains how personal information is\ncollected, used, stored and disclosed when providing Building\nInspection services.\n\n1. Information We Collect\n\nDepending on the services requested, we may collect:\n\nClient name.\n\nPostal address.\n\nInspection property address.\n\nEmail address.\n\nTelephone and mobile numbers.\n\nInspection booking information.\n\nInspection reports.\n\nPhotographs and thermal images.\n\nElectronic signatures.\n\nCommunication records.\n\nPayment information (where applicable).\n\n2. How Information is Collected\n\nPersonal information may be collected through:\n\nInspection booking forms.\n\nOur website.\n\nEmail correspondence.\n\nTelephone conversations.\n\nSMS communications.\n\nInspection Agreement forms.\n\nInspection reports.\n\nFace-to-face meetings.\n\nOnly information reasonably necessary to provide our services\nis collected.\n\n  3. How We Use Your Information\n\nSiteScop Pty Ltd collects and uses personal information only\nfor purposes reasonably necessary to provide our inspection\nservices.\n\nYour information may be used to:\n\nArrange inspection appointments.\n\nConduct Building Inspections.\n\nPrepare and deliver Inspection Reports.\n\nCommunicate regarding bookings and inspections.\n\nIssue invoices and receive payments.\n\nRespond to enquiries and customer support requests.\n\nMeet legal and regulatory obligations.\n\nImprove our services and internal systems.\n\n4. Disclosure of Personal Information\n\nSiteScop Pty Ltd does not sell or rent personal information to\nthird parties.\n\nInformation may be disclosed where reasonably necessary to:\n\nProfessional advisers.\n\nCloud storage providers.\n\nEmail and communication providers.\n\nPayment service providers.\n\nGovernment authorities where required by law.\n\nCourts or regulatory bodies where legally required.\n\nPersonal information will only be disclosed where permitted or\nrequired by Australian law.\n\n5. Storage and Security\n\nReasonable administrative, technical and physical safeguards\nare used to protect personal information against loss,\nunauthorised access, misuse, disclosure or alteration.\n\nPersonal information may be stored electronically using secure\nsystems and cloud services.\n\nAccess is restricted to authorised personnel who require the\ninformation to perform their duties.\n\n6. Retention of Information\n\nInspection records, reports and related documentation may be\nretained for as long as reasonably necessary to satisfy\nbusiness, insurance and legal obligations.\n\nWhen information is no longer required, reasonable steps will\nbe taken to securely destroy or de-identify it.\n\n7. Access and Correction\n\nClients may request access to personal information held by\nSiteScop Pty Ltd and may request correction of inaccurate,\nincomplete or outdated information, subject to applicable\nAustralian law.\n\n8. Website and Cookies\n\nOur website may use cookies and similar technologies to\nimprove functionality, analyse website usage and enhance the\nuser experience.\n\nUsers may disable cookies through their browser settings,\nalthough some website features may not function correctly.\n\n9. Changes to this Privacy Policy\n\nSiteScop Pty Ltd may update this Privacy Policy from time to\ntime.\n\nThe latest version published forms the current Privacy Policy.\n\n10. Contact Us\n\nIf you have questions regarding this Privacy Policy or how\nyour personal information is handled, please contact:\n\nSiteScop Pty Ltd\n\nEmail: info@sitescop.com.au\n\nWebsite: www.sitescop.com.au\n\nEnd of Privacy Policy"
         },
         {
           "id": "client-declaration",
@@ -46,7 +46,7 @@
     },
     "canSign": true
   },
-  "sentAt": "2026-07-04T13:05:34.774Z",
+  "sentAt": "2026-07-04T13:34:33.962Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/ba05f252e32f24182702bf5a1bc24fd4fba256094fc011fd"
   }
