@@ -541,7 +541,7 @@ button:active:not(:disabled) {
   color: var(--muted);
 }
 
-.loading::after {
+#app.loading::after {
   content: '';
   display: block;
   width: 32px;

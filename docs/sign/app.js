@@ -102,20 +102,28 @@
     throw lastError || new Error('Could not reach the SiteScop signing relay.');
   }
 
+  function setAppContent(html) {
+    const root = document.getElementById('app');
+    root.classList.remove('loading');
+    root.innerHTML = html;
+  }
+
   function renderError(message) {
-    document.getElementById('app').innerHTML =
-      '<div class="wrap"><div class="card center"><p class="error">' + escapeHtml(message) + '</p></div></div>';
+    setAppContent(
+      '<div class="wrap"><div class="card center"><p class="error">' + escapeHtml(message) + '</p></div></div>',
+    );
   }
 
   function renderSuccess(agreementNumber) {
-    document.getElementById('app').innerHTML =
+    setAppContent(
       '<div class="wrap"><div class="card center">' +
       '<div class="success-icon">✓</div>' +
       '<h1>Agreement signed</h1>' +
       '<p class="muted">Thank you. Agreement <strong>' +
       escapeHtml(agreementNumber) +
       '</strong> has been submitted securely.</p>' +
-      '</div></div>';
+      '</div></div>',
+    );
   }
 
   function escapeHtml(value) {
@@ -352,15 +360,24 @@
     const items = Array.from(document.querySelectorAll('.accordion-item'));
     const hint = document.getElementById('accordion-hint');
 
-    function openItem(target) {
+    function setAccordionOpen(target) {
       items.forEach(function (item) {
-        const isTarget = item === target;
+        const isTarget = Boolean(target && item === target);
         item.classList.toggle('is-open', isTarget);
         const header = item.querySelector('.accordion-header');
         if (header) header.setAttribute('aria-expanded', isTarget ? 'true' : 'false');
+        const subtitle = item.querySelector('.accordion-subtitle');
+        if (subtitle && !item.dataset.accordionSignature) {
+          subtitle.textContent = isTarget ? 'Tap to collapse' : 'Tap to read';
+        }
       });
 
-      if (target && target.dataset.sectionId) {
+      if (!target) {
+        onProgressChange();
+        return;
+      }
+
+      if (target.dataset.sectionId) {
         const section = sections.find(function (s) {
           return s.id === target.dataset.sectionId;
         });
@@ -376,10 +393,10 @@
         }
       }
 
-      if (target && target.dataset.accordionSignature === 'true') {
+      if (target.dataset.accordionSignature === 'true') {
         state.completed.signature = true;
         state.active = 'signature';
-      } else if (target && target.dataset.sectionId) {
+      } else if (target.dataset.sectionId) {
         const section = sections.find(function (s) {
           return s.id === target.dataset.sectionId;
         });
@@ -395,8 +412,11 @@
       const header = item.querySelector('.accordion-header');
       if (!header || item.classList.contains('is-locked')) return;
       header.addEventListener('click', function () {
-        if (item.classList.contains('is-open')) return;
-        openItem(item);
+        if (item.classList.contains('is-open')) {
+          setAccordionOpen(null);
+          return;
+        }
+        setAccordionOpen(item);
         if (item.id === 'sign-accordion') {
           setTimeout(function () {
             item.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -408,11 +428,11 @@
     document.querySelectorAll('[data-progress-step="signature"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         const signAccordion = document.getElementById('sign-accordion');
-        if (signAccordion && state.signatureUnlocked) openItem(signAccordion);
+        if (signAccordion && state.signatureUnlocked) setAccordionOpen(signAccordion);
       });
     });
 
-    return { openItem: openItem };
+    return { setAccordionOpen: setAccordionOpen };
   }
 
   function updateProgressBar(state) {
@@ -455,7 +475,7 @@
         escapeHtml(agreement.status.toLowerCase()) +
         '.</p></div>';
 
-    document.getElementById('app').innerHTML =
+    setAppContent(
       '<div class="wrap">' +
       renderProgressBar(progressState) +
       '<div class="card hero-card">' +
@@ -485,7 +505,8 @@
       formatDate(agreement.agreementDate) +
       '</div></div></div></div>' +
       signBlock +
-      '</div>';
+      '</div>',
+    );
 
     if (!agreement.canSign) return;
 
