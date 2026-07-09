@@ -296,6 +296,7 @@
 
   function portalLogoUrl(agreement) {
     if (agreement.companyLogoUrl) return agreement.companyLogoUrl;
+    if (window.SITESCOP_SIGN_LOGO_URL) return window.SITESCOP_SIGN_LOGO_URL;
     try {
       var config = cfg();
       if (config.defaultLogoUrl) return config.defaultLogoUrl;
@@ -481,7 +482,7 @@
       escapeHtml(logoUrl) +
       '" alt="' +
       escapeHtml(agreement.companyName) +
-      '" onerror="this.onerror=null;this.src=\'./logo.jpeg\';" />'
+      '" onerror="this.onerror=null;if(window.SITESCOP_SIGN_LOGO_URL){this.src=window.SITESCOP_SIGN_LOGO_URL;}else{this.src=\'./logo.jpeg\';}" />'
     );
   }
 
