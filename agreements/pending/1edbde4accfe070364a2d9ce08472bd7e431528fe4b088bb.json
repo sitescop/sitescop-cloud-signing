@@ -50,7 +50,7 @@
     },
     "canSign": true
   },
-  "sentAt": "2026-07-09T05:42:42.631Z",
+  "sentAt": "2026-07-09T05:42:44.642Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/1edbde4accfe070364a2d9ce08472bd7e431528fe4b088bb"
   }
