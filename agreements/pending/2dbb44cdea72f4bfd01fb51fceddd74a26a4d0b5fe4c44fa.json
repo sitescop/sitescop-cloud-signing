@@ -54,9 +54,20 @@
         }
       ]
     },
-    "canSign": true
+    "canSign": true,
+    "agentName": "justin",
+    "agencyName": "justin selisetor",
+    "agentEmail": "justin@justinselisetor.com",
+    "agentSigningAvailable": true,
+    "signerRole": "CLIENT",
+    "agentAuthoritySection": {
+      "id": "agent-authority",
+      "title": "Agent Authority Declaration",
+      "content": "Agent Authority Declaration\n\nI confirm I am justin of justin selisetor (the Agent).\nI have express authority from Ash Man Brown for 43 Harrison Street, Box Hill North VIC 3129.",
+      "contentHtml": "<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p><div class=\"legal-callout legal-callout-warning\"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client's express authority to accept this agreement on their behalf.</p></div><h3 class=\"legal-subhead\">1. Identity</h3><p>I confirm I am <strong>justin</strong> of <strong>justin selisetor</strong> (the <strong>Agent</strong>).</p><h3 class=\"legal-subhead\">2. Authority to act</h3><p>I confirm I have the <strong>express authority</strong> of <strong>Ash Man Brown</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at <strong>43 Harrison Street, Box Hill North VIC 3129</strong>.</p>"
+    }
   },
-  "sentAt": "2026-07-09T07:07:28.890Z",
+  "sentAt": "2026-07-09T08:35:21.660Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/2dbb44cdea72f4bfd01fb51fceddd74a26a4d0b5fe4c44fa"
   }

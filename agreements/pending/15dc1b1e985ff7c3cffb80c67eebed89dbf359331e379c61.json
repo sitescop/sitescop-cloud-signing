@@ -48,9 +48,20 @@
         }
       ]
     },
-    "canSign": true
+    "canSign": true,
+    "agentName": "Toney",
+    "agencyName": "Lj Hooker",
+    "agentEmail": "agent@agency.com",
+    "agentSigningAvailable": true,
+    "signerRole": "CLIENT",
+    "agentAuthoritySection": {
+      "id": "agent-authority",
+      "title": "Agent Authority Declaration",
+      "content": "Agent Authority Declaration\n\nI confirm I am Toney of Lj Hooker (the Agent).\nI have express authority from Jay Master for 6 Harris Street, Fairfield NSW 2165.",
+      "contentHtml": "<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p><div class=\"legal-callout legal-callout-warning\"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client's express authority to accept this agreement on their behalf.</p></div><h3 class=\"legal-subhead\">1. Identity</h3><p>I confirm I am <strong>Toney</strong> of <strong>Lj Hooker</strong> (the <strong>Agent</strong>).</p><h3 class=\"legal-subhead\">2. Authority to act</h3><p>I confirm I have the <strong>express authority</strong> of <strong>Jay Master</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at <strong>6 Harris Street, Fairfield NSW 2165</strong>.</p>"
+    }
   },
-  "sentAt": "2026-07-09T04:33:10.576Z",
+  "sentAt": "2026-07-09T08:35:21.656Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/15dc1b1e985ff7c3cffb80c67eebed89dbf359331e379c61"
   }

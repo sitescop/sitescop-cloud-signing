@@ -306,32 +306,28 @@
     return './logo.jpeg';
   }
 
-  function enrichAgreementForPortal(agreement) {
+  function enrichAgreementForPortal(agreement, pending) {
+    if (pending) {
+      if (!agreement.agentName && pending.agentName) agreement.agentName = pending.agentName;
+      if (!agreement.agencyName && pending.agencyName) agreement.agencyName = pending.agencyName;
+      if (!agreement.agentEmail && pending.agentEmail) agreement.agentEmail = pending.agentEmail;
+      if (agreement.agentSigningAvailable == null && pending.agentSigningAvailable != null) {
+        agreement.agentSigningAvailable = pending.agentSigningAvailable;
+      }
+      if (!agreement.agentAuthoritySection && pending.agentAuthoritySection) {
+        agreement.agentAuthoritySection = pending.agentAuthoritySection;
+      }
+    }
     if (!agreement.companyLogoUrl) {
       agreement.companyLogoUrl = portalLogoUrl(agreement);
     }
     if (agreement.legalSections && agreement.legalSections.sections) {
+      agreement.legalSections.sections = stripAgentAuthoritySection(agreement.legalSections.sections);
       agreement.legalSections.sections.forEach(function (section) {
         if (!section.contentHtml || !String(section.contentHtml).trim()) {
           section.contentHtml = plainTextToSigningHtml(section.content);
         }
       });
-      if (isAgentSigning(agreement)) {
-        var hasAgentSection = agreement.legalSections.sections.some(function (section) {
-          return section.id === 'agent-authority';
-        });
-        if (!hasAgentSection) {
-          agreement.legalSections.sections = withAgentAuthoritySection(
-            agreement.legalSections.sections,
-            {
-              agentName: agreement.agentName,
-              agencyName: agreement.agencyName,
-              clientName: agreement.clientName,
-              propertyAddress: agreement.propertyAddress,
-            },
-          );
-        }
-      }
     }
     return agreement;
   }
@@ -438,9 +434,75 @@
     return hay.includes(keyword);
   }
 
-  function isAgentSigning(agreement) {
-    if (agreement.signerRole === 'CLIENT') return false;
+  function agentSigningAvailable(agreement) {
+    if (agreement.agentSigningAvailable === true) return true;
+    if (agreement.agentSigningAvailable === false) return false;
     return Boolean(agreement.agentName && String(agreement.agentName).trim());
+  }
+
+  function isAgentSigning(agreement) {
+    return agreement.selectedSigningParty === 'AGENT';
+  }
+
+  function stripAgentAuthoritySection(sections) {
+    return sections.filter(function (section) {
+      return section.id !== 'agent-authority';
+    });
+  }
+
+  function insertAgentAuthoritySection(sections, agreement) {
+    return withAgentAuthoritySection(sections, {
+      agentName: agreement.agentName,
+      agencyName: agreement.agencyName,
+      clientName: agreement.clientName,
+      propertyAddress: agreement.propertyAddress,
+    });
+  }
+
+  function buildSectionsForParty(agreement, party) {
+    var baseSections = stripAgentAuthoritySection(agreement.legalSections.sections || []);
+    if (party === 'AGENT' && agentSigningAvailable(agreement)) {
+      if (agreement.agentAuthoritySection && agreement.agentAuthoritySection.id) {
+        var declIndex = -1;
+        for (var i = 0; i < baseSections.length; i++) {
+          if (
+            baseSections[i].id === 'client-declaration' ||
+            String(baseSections[i].title || '')
+              .toLowerCase()
+              .indexOf('client declaration') >= 0
+          ) {
+            declIndex = i;
+            break;
+          }
+        }
+        if (declIndex < 0) {
+          baseSections = baseSections.concat([agreement.agentAuthoritySection]);
+        } else {
+          baseSections = baseSections
+            .slice(0, declIndex + 1)
+            .concat([agreement.agentAuthoritySection], baseSections.slice(declIndex + 1));
+        }
+      } else {
+        baseSections = insertAgentAuthoritySection(baseSections, agreement);
+      }
+    }
+    return baseSections;
+  }
+
+  function prepareAgreementForSigningParty(agreement, party) {
+    var prepared = Object.assign({}, agreement, {
+      selectedSigningParty: party,
+      legalSections: {
+        sections: buildSectionsForParty(agreement, party).map(function (section) {
+          var next = Object.assign({}, section);
+          if (!next.contentHtml || !String(next.contentHtml).trim()) {
+            next.contentHtml = plainTextToSigningHtml(next.content);
+          }
+          return next;
+        }),
+      },
+    });
+    return prepared;
   }
 
   function buildAgentAuthoritySection(ctx) {
@@ -619,13 +681,17 @@
       formatDate(agreement.agreementDate) +
       '</div></div>' +
       (isAgentSigning(agreement)
-        ? '<div class="summary-item summary-item-wide"><div class="label">Signing party</div><div class="summary-value">' +
+        ? '<div class="summary-item summary-item-wide"><div class="label">Signing as</div><div class="summary-value">Agent — ' +
           escapeHtml(agreement.agentName) +
-          '</div><div class="summary-sub">Agent signing on behalf of ' +
+          '</div><div class="summary-sub">On behalf of ' +
           escapeHtml(agreement.clientName) +
           (agreement.agencyName ? ' · ' + escapeHtml(agreement.agencyName) : '') +
           '</div></div>'
-        : '') +
+        : agreement.selectedSigningParty === 'CLIENT' && agentSigningAvailable(agreement)
+          ? '<div class="summary-item summary-item-wide"><div class="label">Signing as</div><div class="summary-value">Client</div><div class="summary-sub">' +
+            escapeHtml(agreement.clientName) +
+            '</div></div>'
+          : '') +
       '</div></div>'
     );
   }
@@ -922,6 +988,64 @@
     }
   }
 
+  function renderSigningPartySelector(agreement, onChoose) {
+    setAppContent(
+      '<div class="wrap">' +
+        '<div class="card agreement-header agreement-header-branded">' +
+        '<div class="agreement-header-banner">' +
+        renderAgreementLogo(agreement) +
+        '<div class="agreement-header-copy">' +
+        '<p class="agreement-company-name">' +
+        escapeHtml(agreement.companyName) +
+        '</p>' +
+        '<h1 class="agreement-page-title">Inspection Agreement</h1>' +
+        '<p class="agreement-ref">' +
+        escapeHtml(agreement.agreementNumber) +
+        ' · ' +
+        escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
+        '</p>' +
+        '</div></div>' +
+        '<div class="agreement-summary">' +
+        '<div class="summary-item"><div class="label">Client</div><div class="summary-value">' +
+        escapeHtml(agreement.clientName) +
+        '</div></div>' +
+        '<div class="summary-item summary-item-wide"><div class="label">Property</div><div class="summary-value">' +
+        escapeHtml(agreement.propertyAddress) +
+        '</div></div>' +
+        '</div></div>' +
+        '<div class="card signing-party-card">' +
+        '<h2 class="signing-party-title">Who is signing?</h2>' +
+        '<p class="signing-party-lead">Select whether you are the purchaser/client or the real estate agent signing on the client\'s behalf.</p>' +
+        '<div class="signing-party-options">' +
+        '<button type="button" class="signing-party-option" data-signing-party="CLIENT">' +
+        '<span class="signing-party-option-label">I am the client</span>' +
+        '<span class="signing-party-option-name">' +
+        escapeHtml(agreement.clientName) +
+        '</span>' +
+        '<span class="signing-party-option-note">Purchaser / client signs directly</span>' +
+        '</button>' +
+        '<button type="button" class="signing-party-option signing-party-option-agent" data-signing-party="AGENT">' +
+        '<span class="signing-party-option-label">I am the agent</span>' +
+        '<span class="signing-party-option-name">' +
+        escapeHtml(agreement.agentName) +
+        '</span>' +
+        '<span class="signing-party-option-note">Sign on behalf of ' +
+        escapeHtml(agreement.clientName) +
+        (agreement.agencyName ? ' · ' + escapeHtml(agreement.agencyName) : '') +
+        '</span>' +
+        '</button>' +
+        '</div></div>' +
+        renderPortalFooter(agreement) +
+        '</div>',
+    );
+
+    document.querySelectorAll('[data-signing-party]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        onChoose(button.getAttribute('data-signing-party'));
+      });
+    });
+  }
+
   function renderAgreement(agreement, pending) {
     const sections = agreement.legalSections.sections;
     const progressState = {
@@ -1003,6 +1127,7 @@
             signatureName: nameInput.value.trim(),
             signatureData: pad.toDataUrl(),
             declarationsAccepted: true,
+            signingParty: agreement.selectedSigningParty || 'CLIENT',
             agentAuthorityAccepted: isAgentSigning(agreement) ? true : undefined,
           }),
         });
@@ -1032,7 +1157,15 @@
 
       void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
-      renderAgreement(enrichAgreementForPortal(pending.publicView), pending);
+      var baseAgreement = enrichAgreementForPortal(pending.publicView, pending);
+      if (baseAgreement.canSign && agentSigningAvailable(baseAgreement)) {
+        renderSigningPartySelector(baseAgreement, function (party) {
+          renderAgreement(prepareAgreementForSigningParty(baseAgreement, party), pending);
+        });
+        return;
+      }
+
+      renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'CLIENT'), pending);
     } catch (e) {
       renderError(e.message || 'Could not load agreement.');
     }

@@ -1083,3 +1083,80 @@ button:active:not(:disabled) {
   font-size: 0.82rem;
   color: var(--muted);
 }
+
+.signing-party-card {
+  margin-top: 20px;
+  padding: 24px 20px;
+}
+
+.signing-party-title {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.signing-party-lead {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.signing-party-options {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  .signing-party-options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.signing-party-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  padding: 18px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.signing-party-option:hover,
+.signing-party-option:focus-visible {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.signing-party-option-agent {
+  border-color: rgba(27, 67, 50, 0.25);
+  background: linear-gradient(180deg, rgba(27, 67, 50, 0.05) 0%, #fff 100%);
+}
+
+.signing-party-option-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.signing-party-option-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.signing-party-option-note {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
