@@ -400,8 +400,11 @@
     if (lower.includes('privacy')) {
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
     }
-    if (lower.includes('declar')) {
+    if (lower.includes('declar') && !lower.includes('agent')) {
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>';
+    }
+    if (lower.includes('agent')) {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
     }
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>';
   }
@@ -419,14 +422,42 @@
     return hay.includes(keyword);
   }
 
-  function renderProgressBar(state) {
+  function isAgentSigning(agreement) {
+    return agreement.signerRole === 'AGENT' && agreement.agentName;
+  }
+
+  function signingHintText(agreement) {
+    if (isAgentSigning(agreement)) {
+      return 'Please read each section. Your signature unlocks after you open the Client Declaration and Agent Authority Declaration.';
+    }
+    return 'Please read each section. Your signature unlocks after you open the Client Declaration.';
+  }
+
+  function signatureLockNotice(agreement) {
+    if (isAgentSigning(agreement)) {
+      return 'Please open the Client Declaration and Agent Authority Declaration above before signing.';
+    }
+    return 'Please open the Client Declaration section above before signing.';
+  }
+
+  function canUnlockSignature(state, agreement) {
+    if (isAgentSigning(agreement)) {
+      return state.completed.declaration && state.completed.agent;
+    }
+    return state.completed.declaration;
+  }
+
+  function renderProgressBar(state, agreement) {
     const steps = [
       { id: 'overview', label: 'Agreement' },
       { id: 'terms', label: 'Terms' },
       { id: 'privacy', label: 'Privacy' },
       { id: 'declaration', label: 'Declaration' },
-      { id: 'signature', label: 'Signature' },
     ];
+    if (isAgentSigning(agreement)) {
+      steps.push({ id: 'agent', label: 'Agent' });
+    }
+    steps.push({ id: 'signature', label: 'Signature' });
 
     return (
       '<nav class="progress-bar" aria-label="Signing progress">' +
@@ -514,6 +545,14 @@
       '<div class="summary-item"><div class="label">Agreement date</div><div class="summary-value">' +
       formatDate(agreement.agreementDate) +
       '</div></div>' +
+      (isAgentSigning(agreement)
+        ? '<div class="summary-item summary-item-wide"><div class="label">Signing party</div><div class="summary-value">' +
+          escapeHtml(agreement.agentName) +
+          '</div><div class="summary-sub">Agent signing on behalf of ' +
+          escapeHtml(agreement.clientName) +
+          (agreement.agencyName ? ' · ' + escapeHtml(agreement.agencyName) : '') +
+          '</div></div>'
+        : '') +
       '</div></div>'
     );
   }
@@ -560,7 +599,13 @@
       .join('');
   }
 
-  function renderSignatureSection(locked) {
+  function renderSignatureSection(locked, agreement) {
+    const agentMode = isAgentSigning(agreement);
+    const acceptLabel = agentMode
+      ? 'I confirm I have express authority to sign on behalf of ' +
+        agreement.clientName +
+        ', and I have read and accept the terms, scope, limitations, privacy policy, client declaration, and agent authority declaration.'
+      : 'I have read and accept the terms, scope, limitations, privacy policy, and client declaration.';
     return (
       '<div class="accordion-item sign-section is-open' +
       (locked ? ' is-pending is-locked' : ' is-reviewed') +
@@ -570,9 +615,17 @@
       signatureIconSvg() +
       '</span>' +
       '<span class="accordion-title-wrap">' +
-      '<p class="accordion-title">Sign Agreement</p>' +
+      '<p class="accordion-title">' +
+      (agentMode ? 'Sign on behalf of client' : 'Sign Agreement') +
+      '</p>' +
       '<p class="accordion-subtitle" id="sign-section-subtitle">' +
-      (locked ? 'Read the Client Declaration above to enable signing' : 'Enter your name and signature below') +
+      (locked
+        ? agentMode
+          ? 'Read the Client and Agent Authority declarations above to enable signing'
+          : 'Read the Client Declaration above to enable signing'
+        : agentMode
+          ? 'Enter your name and sign as authorised agent for ' + escapeHtml(agreement.clientName)
+          : 'Enter your name and signature below') +
       '</p>' +
       '</span>' +
       '<span class="accordion-status' +
@@ -584,10 +637,14 @@
       '<div class="sign-section-body">' +
       '<p class="sign-lock-notice" id="sign-lock-notice"' +
       (locked ? '' : ' hidden') +
-      '>Please open the Client Declaration section above before signing.</p>' +
+      '>' +
+      signatureLockNotice(agreement) +
+      '</p>' +
       '<div id="sign-form">' +
       '<div id="form-error" class="error" hidden></div>' +
-      '<label class="field">Full name<input type="text" id="signature-name" autocomplete="name"' +
+      '<label class="field">' +
+      (agentMode ? 'Agent full name' : 'Full name') +
+      '<input type="text" id="signature-name" autocomplete="name"' +
       (locked ? ' disabled' : '') +
       ' /></label>' +
       '<p class="label">Draw your signature</p>' +
@@ -598,7 +655,9 @@
       '<label class="checkbox"><input type="checkbox" id="accepted"' +
       (locked ? ' disabled' : '') +
       ' />' +
-      '<span>I have read and accept the terms, scope, limitations, privacy policy, and client declaration.</span></label>' +
+      '<span>' +
+      escapeHtml(acceptLabel) +
+      '</span></label>' +
       '<button type="button" class="btn-primary" id="submit-btn" disabled>Sign and submit</button>' +
       '</div></div></div>'
     );
@@ -610,9 +669,9 @@
     );
   }
 
-  function unlockSignatureSection(state, hint) {
+  function unlockSignatureSection(state, agreement, hint) {
+    if (!canUnlockSignature(state, agreement)) return;
     state.signatureUnlocked = true;
-    state.completed.declaration = true;
     state.active = 'signature';
     const signSection = document.getElementById('sign-section');
     if (signSection) {
@@ -627,7 +686,11 @@
         statusEl.classList.add('is-complete');
       }
       const subtitle = document.getElementById('sign-section-subtitle');
-      if (subtitle) subtitle.textContent = 'Enter your name and signature below';
+      if (subtitle) {
+        subtitle.textContent = isAgentSigning(agreement)
+          ? 'Enter your name and sign as authorised agent for ' + agreement.clientName
+          : 'Enter your name and signature below';
+      }
     }
     const lockNotice = document.getElementById('sign-lock-notice');
     if (lockNotice) lockNotice.hidden = true;
@@ -645,20 +708,25 @@
     }
   }
 
-  function applyProgressForSection(item, state, sections, hint) {
+  function applyProgressForSection(item, state, sections, agreement, hint) {
     const section = sections.find(function (s) {
       return s.id === item.dataset.sectionId;
     });
     if (!section) return;
     if (matchesSection(section, 'term')) state.completed.terms = true;
     if (matchesSection(section, 'privacy')) state.completed.privacy = true;
-    if (matchesSection(section, 'declar')) {
+    if (section.id === 'agent-authority' || matchesSection(section, 'agent authority')) {
+      state.completed.agent = true;
+      unlockSignatureSection(state, agreement, hint);
+      return;
+    }
+    if (matchesSection(section, 'declar') && section.id !== 'agent-authority') {
       state.completed.declaration = true;
-      unlockSignatureSection(state, hint);
+      unlockSignatureSection(state, agreement, hint);
     }
   }
 
-  function setupAccordion(state, sections, onProgressChange) {
+  function setupAccordion(state, sections, agreement, onProgressChange) {
     const items = Array.from(document.querySelectorAll('.accordion-item[data-section-id]'));
     const hint = document.getElementById('accordion-hint');
 
@@ -669,7 +737,7 @@
 
       if (currentlyOpen && currentlyOpen !== target) {
         markSectionReviewed(currentlyOpen, state, sections, hint, onProgressChange);
-        applyProgressForSection(currentlyOpen, state, sections, hint);
+        applyProgressForSection(currentlyOpen, state, sections, agreement, hint);
       }
 
       items.forEach(function (item) {
@@ -692,7 +760,10 @@
           return s.id === target.dataset.sectionId;
         });
         if (section && matchesSection(section, 'privacy')) state.active = 'privacy';
-        else if (section && matchesSection(section, 'declar')) state.active = 'declaration';
+        else if (section && matchesSection(section, 'declar') && section.id !== 'agent-authority')
+          state.active = 'declaration';
+        else if (section && (section.id === 'agent-authority' || matchesSection(section, 'agent authority')))
+          state.active = 'agent';
         else if (section && matchesSection(section, 'term')) state.active = 'terms';
         else state.active = 'overview';
       } else if (!target) {
@@ -710,7 +781,7 @@
         header.addEventListener('click', function () {
           if (item.classList.contains('is-open')) {
             markSectionReviewed(item, state, sections, hint, onProgressChange);
-            applyProgressForSection(item, state, sections, hint);
+            applyProgressForSection(item, state, sections, agreement, hint);
             setAccordionOpen(null);
             return;
           }
@@ -723,7 +794,7 @@
           if (!item.classList.contains('is-open')) return;
           if (isInteractiveClick(e.target)) return;
           markSectionReviewed(item, state, sections, hint, onProgressChange);
-          applyProgressForSection(item, state, sections, hint);
+          applyProgressForSection(item, state, sections, agreement, hint);
           setAccordionOpen(null);
         });
       }
@@ -745,12 +816,14 @@
     return { setAccordionOpen: setAccordionOpen };
   }
 
-  function updateProgressBar(state) {
+  function updateProgressBar(state, agreement) {
     state.completed.overview = true;
-    if (state.completed.declaration) state.signatureUnlocked = true;
+    state.signatureUnlocked = canUnlockSignature(state, agreement);
 
     const steps = document.querySelectorAll('.progress-step');
-    const order = ['overview', 'terms', 'privacy', 'declaration', 'signature'];
+    const order = ['overview', 'terms', 'privacy', 'declaration'];
+    if (isAgentSigning(agreement)) order.push('agent');
+    order.push('signature');
     steps.forEach(function (el, index) {
       const stepId = order[index];
       el.classList.toggle('is-complete', Boolean(state.completed[stepId]));
@@ -780,15 +853,24 @@
     const sections = agreement.legalSections.sections;
     const progressState = {
       active: 'overview',
-      completed: { overview: true, terms: false, privacy: false, declaration: false, signature: false },
+      completed: {
+        overview: true,
+        terms: false,
+        privacy: false,
+        declaration: false,
+        agent: false,
+        signature: false,
+      },
       signatureUnlocked: false,
     };
 
     const signBlock = agreement.canSign
-      ? '<p class="accordion-hint" id="accordion-hint">Please read each section. Your signature unlocks after you open the Client Declaration.</p>' +
+      ? '<p class="accordion-hint" id="accordion-hint">' +
+        escapeHtml(signingHintText(agreement)) +
+        '</p>' +
         '<div class="accordion">' +
         renderLegalAccordion(sections, -1) +
-        renderSignatureSection(true) +
+        renderSignatureSection(true, agreement) +
         '</div>'
       : '<div class="card center"><p class="muted">This agreement is already ' +
         escapeHtml(agreement.status.toLowerCase()) +
@@ -796,7 +878,7 @@
 
     setAppContent(
       '<div class="wrap">' +
-      renderProgressBar(progressState) +
+      renderProgressBar(progressState, agreement) +
       renderAgreementHeader(agreement) +
       signBlock +
       renderPortalFooter(agreement) +
@@ -806,14 +888,16 @@
     if (!agreement.canSign) return;
 
     function refreshProgress() {
-      updateProgressBar(progressState);
+      updateProgressBar(progressState, agreement);
     }
 
-    setupAccordion(progressState, sections, refreshProgress);
+    setupAccordion(progressState, sections, agreement, refreshProgress);
     refreshProgress();
 
     const nameInput = document.getElementById('signature-name');
-    if (nameInput) nameInput.value = agreement.clientName;
+    if (nameInput) {
+      nameInput.value = isAgentSigning(agreement) ? agreement.agentName : agreement.clientName;
+    }
 
     const canvasEl = document.getElementById('signature-canvas');
     const pad = setupSignaturePad(canvasEl);
@@ -846,6 +930,7 @@
             signatureName: nameInput.value.trim(),
             signatureData: pad.toDataUrl(),
             declarationsAccepted: true,
+            agentAuthorityAccepted: isAgentSigning(agreement) ? true : undefined,
           }),
         });
         renderSuccess(pending.agreementNumber, pending.publicView);
