@@ -211,6 +211,104 @@
       .replace(/"/g, '&quot;');
   }
 
+  function plainTextToSigningHtml(text) {
+    var blocks = String(text || '')
+      .split(/\n\n+/)
+      .map(function (b) {
+        return b.trim();
+      })
+      .filter(Boolean);
+    var html = [];
+    var i = 0;
+
+    while (i < blocks.length) {
+      var block = blocks[i];
+
+      if (/^\d+\.\s/.test(block) && block.length < 160 && block.indexOf('\n') === -1) {
+        html.push('<h3 class="legal-subhead">' + escapeHtml(block) + '</h3>');
+        i += 1;
+        continue;
+      }
+
+      if (/^important$/i.test(block)) {
+        html.push('<div class="legal-callout legal-callout-note"><strong>Important</strong></div>');
+        i += 1;
+        continue;
+      }
+
+      if (/^additional fees may apply/i.test(block)) {
+        var items = [];
+        i += 1;
+        while (
+          i < blocks.length &&
+          blocks[i].length < 140 &&
+          !/^\d+\.\s/.test(blocks[i]) &&
+          !/^important$/i.test(blocks[i]) &&
+          !/^additional fees may apply/i.test(blocks[i])
+        ) {
+          items.push(blocks[i]);
+          i += 1;
+        }
+        html.push(
+          '<div class="legal-callout legal-callout-note"><p><strong>' +
+            escapeHtml(block) +
+            '</strong></p>' +
+            (items.length
+              ? '<ul>' +
+                items
+                  .map(function (item) {
+                    var escaped = escapeHtml(item);
+                    if (/additional buildings|additional structures|additional fees|granny|separate structure/i.test(item)) {
+                      return '<li><strong>' + escaped + '</strong></li>';
+                    }
+                    return '<li>' + escaped + '</li>';
+                  })
+                  .join('') +
+                '</ul>'
+              : '') +
+            '</div>',
+        );
+        continue;
+      }
+
+      if (
+        (/^the written inspection report/i.test(block) ||
+          /does not guarantee|concealed defects may exist|failure to obtain recommended/i.test(block)) &&
+        block.length < 360
+      ) {
+        html.push('<div class="legal-callout legal-callout-note"><p>' + escapeHtml(block) + '</p></div>');
+        i += 1;
+        continue;
+      }
+
+      if (/warning|cannot be reported|excluded from the inspection/i.test(block) && block.length < 360) {
+        html.push('<div class="legal-callout legal-callout-warning"><p>' + escapeHtml(block) + '</p></div>');
+        i += 1;
+        continue;
+      }
+
+      html.push('<p>' + escapeHtml(block).replace(/\n/g, '<br>') + '</p>');
+      i += 1;
+    }
+
+    return html.join('');
+  }
+
+  function enrichAgreementForPortal(agreement) {
+    var config = cfg();
+    if (!agreement.companyLogoUrl && config.defaultLogoUrl) {
+      agreement.companyLogoUrl = config.defaultLogoUrl;
+    }
+    if (agreement.legalSections && agreement.legalSections.sections) {
+      agreement.legalSections.sections.forEach(function (section) {
+        if (!section.contentHtml || !String(section.contentHtml).trim()) {
+          section.contentHtml = plainTextToSigningHtml(section.content);
+        }
+      });
+    }
+    return agreement;
+  }
+
   function setupSignaturePad(canvas) {
     const ctx = canvas.getContext('2d');
     let drawing = false;
@@ -363,7 +461,7 @@
     if (section.contentHtml && String(section.contentHtml).trim()) {
       return String(section.contentHtml);
     }
-    return '<p>' + escapeHtml(section.content || '') + '</p>';
+    return plainTextToSigningHtml(section.content || '');
   }
 
   function renderAgreementLogo(agreement) {
@@ -767,7 +865,7 @@
 
       void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
-      renderAgreement(pending.publicView, pending);
+      renderAgreement(enrichAgreementForPortal(pending.publicView), pending);
     } catch (e) {
       renderError(e.message || 'Could not load agreement.');
     }
