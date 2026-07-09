@@ -294,10 +294,20 @@
     return html.join('');
   }
 
+  function portalLogoUrl(agreement) {
+    if (agreement.companyLogoUrl) return agreement.companyLogoUrl;
+    try {
+      var config = cfg();
+      if (config.defaultLogoUrl) return config.defaultLogoUrl;
+    } catch (e) {
+      /* config not loaded yet */
+    }
+    return './logo.svg';
+  }
+
   function enrichAgreementForPortal(agreement) {
-    var config = cfg();
-    if (!agreement.companyLogoUrl && config.defaultLogoUrl) {
-      agreement.companyLogoUrl = config.defaultLogoUrl;
+    if (!agreement.companyLogoUrl) {
+      agreement.companyLogoUrl = portalLogoUrl(agreement);
     }
     if (agreement.legalSections && agreement.legalSections.sections) {
       agreement.legalSections.sections.forEach(function (section) {
@@ -465,29 +475,26 @@
   }
 
   function renderAgreementLogo(agreement) {
-    if (agreement.companyLogoUrl) {
-      return (
-        '<img class="agreement-logo" src="' +
-        escapeHtml(agreement.companyLogoUrl) +
-        '" alt="' +
-        escapeHtml(agreement.companyName) +
-        '" />'
-      );
-    }
-    return '<div class="agreement-logo-placeholder" aria-hidden="true">SS</div>';
+    return (
+      '<img class="agreement-logo" src="' +
+      escapeHtml(portalLogoUrl(agreement)) +
+      '" alt="' +
+      escapeHtml(agreement.companyName) +
+      '" />'
+    );
   }
 
   function renderAgreementHeader(agreement) {
     return (
-      '<div class="card agreement-header">' +
-      '<div class="agreement-header-row">' +
+      '<div class="card agreement-header agreement-header-branded">' +
+      '<div class="agreement-header-banner">' +
       renderAgreementLogo(agreement) +
       '<div class="agreement-header-copy">' +
       '<p class="agreement-company-name">' +
       escapeHtml(agreement.companyName) +
       '</p>' +
       '<h1 class="agreement-page-title">Inspection Agreement</h1>' +
-      '<p class="agreement-ref muted">' +
+      '<p class="agreement-ref">' +
       escapeHtml(agreement.agreementNumber) +
       ' · ' +
       escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
