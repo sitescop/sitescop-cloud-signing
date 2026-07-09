@@ -359,6 +359,58 @@
     );
   }
 
+  function renderSectionBody(section) {
+    if (section.contentHtml && String(section.contentHtml).trim()) {
+      return String(section.contentHtml);
+    }
+    return '<p>' + escapeHtml(section.content || '') + '</p>';
+  }
+
+  function renderAgreementLogo(agreement) {
+    if (agreement.companyLogoUrl) {
+      return (
+        '<img class="agreement-logo" src="' +
+        escapeHtml(agreement.companyLogoUrl) +
+        '" alt="' +
+        escapeHtml(agreement.companyName) +
+        '" />'
+      );
+    }
+    return '<div class="agreement-logo-placeholder" aria-hidden="true">SS</div>';
+  }
+
+  function renderAgreementHeader(agreement) {
+    return (
+      '<div class="card agreement-header">' +
+      '<div class="agreement-header-row">' +
+      renderAgreementLogo(agreement) +
+      '<div class="agreement-header-copy">' +
+      '<p class="agreement-company-name">' +
+      escapeHtml(agreement.companyName) +
+      '</p>' +
+      '<h1 class="agreement-page-title">Inspection Agreement</h1>' +
+      '<p class="agreement-ref muted">' +
+      escapeHtml(agreement.agreementNumber) +
+      ' · ' +
+      escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
+      '</p>' +
+      '</div></div>' +
+      '<div class="agreement-summary">' +
+      '<div class="summary-item"><div class="label">Client</div><div class="summary-value">' +
+      escapeHtml(agreement.clientName) +
+      '</div><div class="summary-sub">' +
+      escapeHtml(agreement.clientEmail) +
+      '</div></div>' +
+      '<div class="summary-item summary-item-wide"><div class="label">Property</div><div class="summary-value">' +
+      escapeHtml(agreement.propertyAddress) +
+      '</div></div>' +
+      '<div class="summary-item"><div class="label">Agreement date</div><div class="summary-value">' +
+      formatDate(agreement.agreementDate) +
+      '</div></div>' +
+      '</div></div>'
+    );
+  }
+
   function renderLegalAccordion(sections, openIndex) {
     return sections
       .map(function (s, index) {
@@ -390,9 +442,9 @@
           '</button>' +
           '<div class="accordion-panel">' +
           '<div class="accordion-panel-inner">' +
-          '<div class="accordion-body" data-accordion-body="true"><p>' +
-          escapeHtml(s.content) +
-          '</p></div>' +
+          '<div class="accordion-body legal-content" data-accordion-body="true">' +
+          renderSectionBody(s) +
+          '</div>' +
           '</div>' +
           '</div>' +
           '</div>'
@@ -638,32 +690,7 @@
     setAppContent(
       '<div class="wrap">' +
       renderProgressBar(progressState) +
-      '<div class="card hero-card">' +
-      '<span class="hero-badge">SiteScop Inspections</span>' +
-      '<p class="muted">' +
-      escapeHtml(agreement.companyName) +
-      '</p>' +
-      '<h1>Client Inspection Agreement</h1>' +
-      '<p class="muted">' +
-      escapeHtml(agreement.agreementNumber) +
-      ' · ' +
-      escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
-      '</p>' +
-      '<div class="client-details">' +
-      '<div class="detail-item"><div class="label">Client</div><div class="detail-value">' +
-      escapeHtml(agreement.clientName) +
-      '</div><div class="detail-sub">' +
-      escapeHtml(agreement.clientEmail) +
-      '</div></div>' +
-      '<div class="detail-item detail-item-wide"><div class="label">Property</div><div class="detail-value">' +
-      escapeHtml(agreement.propertyAddress) +
-      '</div></div>' +
-      '<div class="detail-item"><div class="label">Total (inc. GST)</div><div class="detail-value price">' +
-      formatAud(agreement.totalCents) +
-      '</div></div>' +
-      '<div class="detail-item"><div class="label">Agreement date</div><div class="detail-value">' +
-      formatDate(agreement.agreementDate) +
-      '</div></div></div></div>' +
+      renderAgreementHeader(agreement) +
       signBlock +
       renderPortalFooter(agreement) +
       '</div>',

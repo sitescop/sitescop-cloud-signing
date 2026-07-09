@@ -179,6 +179,115 @@ body {
   box-shadow: var(--shadow);
 }
 
+/* ── Agreement header (compact, with logo) ── */
+.agreement-header {
+  padding: 18px 20px;
+}
+
+.agreement-header-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.agreement-logo {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 6px;
+}
+
+.agreement-logo-placeholder {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.agreement-header-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.agreement-company-name {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.agreement-page-title {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 1024px) {
+  .agreement-page-title {
+    font-size: 1.35rem;
+  }
+}
+
+.agreement-ref {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.agreement-summary {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 560px) {
+  .agreement-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.summary-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.summary-item-wide {
+  grid-column: 1 / -1;
+}
+
+.summary-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.summary-sub {
+  margin-top: 4px;
+  font-size: 0.88rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
 .hero-card {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
   color: #fff;
@@ -558,10 +667,68 @@ h1 {
 
 .accordion-body p {
   white-space: pre-wrap;
-  margin: 0;
+  margin: 0 0 0.75em;
   width: 100%;
   max-width: none;
+  line-height: inherit;
+}
+
+.accordion-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Legal content (formatted from HTML source) ── */
+.legal-content .legal-subhead {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 1.1em 0 0.45em;
+}
+
+.legal-content .legal-subhead:first-child {
+  margin-top: 0;
+}
+
+.legal-content strong {
+  font-weight: 700;
+  color: var(--text-body);
+}
+
+.legal-content ul,
+.legal-content ol {
+  margin: 0.5em 0 0.85em;
+  padding-left: 1.35em;
+}
+
+.legal-content li {
+  margin-bottom: 0.35em;
+}
+
+.legal-content li strong {
+  color: var(--primary);
+}
+
+.legal-callout {
+  margin: 0.85em 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
   line-height: 1.65;
+}
+
+.legal-callout-note {
+  background: #eef8ff;
+  border-left: 4px solid var(--primary-light);
+  color: var(--text-body);
+}
+
+.legal-callout-warning {
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  color: #7f1d1d;
+}
+
+.legal-callout strong {
+  color: inherit;
 }
 
 @media (min-width: 640px) {
