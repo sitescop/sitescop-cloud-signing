@@ -39,24 +39,16 @@ body {
 }
 
 .wrap {
-  width: 100%;
+  width: 90%;
   max-width: none;
   margin: 0 auto;
-  padding: 12px 4% 32px;
-}
-
-@media (min-width: 640px) {
-  .wrap {
-    width: 80%;
-    padding: 20px 2.5% 40px;
-  }
+  padding: 12px 0 32px;
 }
 
 @media (min-width: 1024px) {
   .wrap {
-    width: 92%;
-    max-width: 1400px;
-    padding: 24px 1.25% 48px;
+    width: 75%;
+    padding: 24px 0 48px;
   }
 }
 
@@ -830,13 +822,23 @@ button:active:not(:disabled) {
 
 .accordion-hint {
   text-align: center;
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0 0 12px;
-  padding: 10px;
-  background: var(--surface);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #b91c1c;
+  margin: 0 0 16px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
   border-radius: var(--radius-sm);
-  border: 1px dashed var(--border);
+  border: 2px solid #ef4444;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.18);
+  line-height: 1.5;
+}
+
+@media (min-width: 1024px) {
+  .accordion-hint {
+    font-size: 1.125rem;
+    padding: 18px 24px;
+  }
 }
 
 .accordion-hint.is-hidden {
