@@ -362,9 +362,9 @@
   function renderLegalAccordion(sections, openIndex) {
     return sections
       .map(function (s, index) {
-        const isOpen = index === openIndex;
+        const isOpen = openIndex >= 0 && index === openIndex;
         return (
-          '<div class="accordion-item' +
+          '<div class="accordion-item is-pending' +
           (isOpen ? ' is-open' : '') +
           '" data-accordion-index="' +
           index +
@@ -381,17 +381,18 @@
           '<p class="accordion-title">' +
           escapeHtml(s.title) +
           '</p>' +
-          '<p class="accordion-subtitle">Tap header or anywhere below to ' +
-          (isOpen ? 'close' : 'read') +
+          '<p class="accordion-subtitle">' +
+          (isOpen ? 'Tap to close when finished reading' : 'Tap to read — turns green when done') +
           '</p>' +
           '</span>' +
+          '<span class="accordion-status" aria-hidden="true">!</span>' +
           chevronSvg() +
           '</button>' +
           '<div class="accordion-panel">' +
           '<div class="accordion-panel-inner">' +
           '<div class="accordion-body" data-accordion-body="true"><p>' +
           escapeHtml(s.content) +
-          '</p><p class="accordion-close-hint">Tap anywhere in this section to close</p></div>' +
+          '</p></div>' +
           '</div>' +
           '</div>' +
           '</div>'
@@ -402,18 +403,23 @@
 
   function renderSignatureSection(locked) {
     return (
-      '<div class="sign-section' +
-      (locked ? ' is-locked' : '') +
+      '<div class="accordion-item sign-section is-open' +
+      (locked ? ' is-pending is-locked' : ' is-reviewed') +
       '" id="sign-section">' +
       '<div class="sign-section-header">' +
       '<span class="accordion-icon">' +
       signatureIconSvg() +
       '</span>' +
       '<span class="accordion-title-wrap">' +
-      '<p class="accordion-title">Sign agreement</p>' +
-      '<p class="accordion-subtitle">' +
+      '<p class="accordion-title">Sign Agreement</p>' +
+      '<p class="accordion-subtitle" id="sign-section-subtitle">' +
       (locked ? 'Read the Client Declaration above to enable signing' : 'Enter your name and signature below') +
       '</p>' +
+      '</span>' +
+      '<span class="accordion-status' +
+      (locked ? '' : ' is-complete') +
+      '" id="sign-section-status" aria-hidden="true">' +
+      (locked ? '!' : '✓') +
       '</span>' +
       '</div>' +
       '<div class="sign-section-body">' +
@@ -451,14 +457,46 @@
     state.active = 'signature';
     const signSection = document.getElementById('sign-section');
     if (signSection) {
-      signSection.classList.remove('is-locked');
+      signSection.classList.remove('is-locked', 'is-pending');
+      signSection.classList.add('is-reviewed');
       signSection.querySelectorAll('input, button').forEach(function (el) {
         if (el.id !== 'submit-btn') el.disabled = false;
       });
+      const statusEl = document.getElementById('sign-section-status');
+      if (statusEl) {
+        statusEl.textContent = '✓';
+        statusEl.classList.add('is-complete');
+      }
+      const subtitle = document.getElementById('sign-section-subtitle');
+      if (subtitle) subtitle.textContent = 'Enter your name and signature below';
     }
     const lockNotice = document.getElementById('sign-lock-notice');
     if (lockNotice) lockNotice.hidden = true;
     if (hint) hint.classList.add('is-hidden');
+  }
+
+  function markSectionReviewed(item, state, sections, hint, onProgressChange) {
+    if (!item || item.classList.contains('is-reviewed')) return;
+    item.classList.remove('is-pending');
+    item.classList.add('is-reviewed');
+    const statusEl = item.querySelector('.accordion-status');
+    if (statusEl) {
+      statusEl.textContent = '✓';
+      statusEl.classList.add('is-complete');
+    }
+  }
+
+  function applyProgressForSection(item, state, sections, hint) {
+    const section = sections.find(function (s) {
+      return s.id === item.dataset.sectionId;
+    });
+    if (!section) return;
+    if (matchesSection(section, 'term')) state.completed.terms = true;
+    if (matchesSection(section, 'privacy')) state.completed.privacy = true;
+    if (matchesSection(section, 'declar')) {
+      state.completed.declaration = true;
+      unlockSignatureSection(state, hint);
+    }
   }
 
   function setupAccordion(state, sections, onProgressChange) {
@@ -466,6 +504,15 @@
     const hint = document.getElementById('accordion-hint');
 
     function setAccordionOpen(target) {
+      const currentlyOpen = items.find(function (item) {
+        return item.classList.contains('is-open');
+      });
+
+      if (currentlyOpen && currentlyOpen !== target) {
+        markSectionReviewed(currentlyOpen, state, sections, hint, onProgressChange);
+        applyProgressForSection(currentlyOpen, state, sections, hint);
+      }
+
       items.forEach(function (item) {
         const isTarget = Boolean(target && item === target);
         item.classList.toggle('is-open', isTarget);
@@ -474,33 +521,14 @@
         const subtitle = item.querySelector('.accordion-subtitle');
         if (subtitle) {
           subtitle.textContent = isTarget
-            ? 'Tap header or anywhere below to close'
-            : 'Tap header or anywhere below to read';
+            ? 'Tap to close when finished reading'
+            : item.classList.contains('is-reviewed')
+              ? 'Read — tap to open again'
+              : 'Tap to read — turns green when done';
         }
-        const closeHint = item.querySelector('.accordion-close-hint');
-        if (closeHint) closeHint.hidden = !isTarget;
       });
 
-      if (!target) {
-        onProgressChange();
-        return;
-      }
-
-      if (target.dataset.sectionId) {
-        const section = sections.find(function (s) {
-          return s.id === target.dataset.sectionId;
-        });
-        if (section) {
-          if (matchesSection(section, 'term')) state.completed.terms = true;
-          if (matchesSection(section, 'privacy')) state.completed.privacy = true;
-          if (matchesSection(section, 'declar')) {
-            state.completed.declaration = true;
-            unlockSignatureSection(state, hint);
-          }
-        }
-      }
-
-      if (target.dataset.sectionId) {
+      if (target && target.dataset.sectionId) {
         const section = sections.find(function (s) {
           return s.id === target.dataset.sectionId;
         });
@@ -508,6 +536,8 @@
         else if (section && matchesSection(section, 'declar')) state.active = 'declaration';
         else if (section && matchesSection(section, 'term')) state.active = 'terms';
         else state.active = 'overview';
+      } else if (!target) {
+        state.active = 'overview';
       }
 
       onProgressChange();
@@ -520,6 +550,8 @@
       if (header) {
         header.addEventListener('click', function () {
           if (item.classList.contains('is-open')) {
+            markSectionReviewed(item, state, sections, hint, onProgressChange);
+            applyProgressForSection(item, state, sections, hint);
             setAccordionOpen(null);
             return;
           }
@@ -531,14 +563,11 @@
         body.addEventListener('click', function (e) {
           if (!item.classList.contains('is-open')) return;
           if (isInteractiveClick(e.target)) return;
+          markSectionReviewed(item, state, sections, hint, onProgressChange);
+          applyProgressForSection(item, state, sections, hint);
           setAccordionOpen(null);
         });
       }
-    });
-
-    items.forEach(function (item) {
-      const closeHint = item.querySelector('.accordion-close-hint');
-      if (closeHint) closeHint.hidden = !item.classList.contains('is-open');
     });
 
     document.querySelectorAll('[data-progress-step="signature"]').forEach(function (btn) {
@@ -576,7 +605,16 @@
     });
 
     const signAccordion = document.getElementById('sign-section');
-    if (signAccordion) signAccordion.classList.toggle('is-locked', !state.signatureUnlocked);
+    if (signAccordion) {
+      signAccordion.classList.toggle('is-locked', !state.signatureUnlocked);
+      signAccordion.classList.toggle('is-pending', !state.signatureUnlocked);
+      signAccordion.classList.toggle('is-reviewed', state.signatureUnlocked);
+      const statusEl = document.getElementById('sign-section-status');
+      if (statusEl) {
+        statusEl.textContent = state.signatureUnlocked ? '✓' : '!';
+        statusEl.classList.toggle('is-complete', state.signatureUnlocked);
+      }
+    }
   }
 
   function renderAgreement(agreement, pending) {
@@ -590,9 +628,9 @@
     const signBlock = agreement.canSign
       ? '<p class="accordion-hint" id="accordion-hint">Please read each section. Your signature unlocks after you open the Client Declaration.</p>' +
         '<div class="accordion">' +
-        renderLegalAccordion(sections, 0) +
-        '</div>' +
-        renderSignatureSection(true)
+        renderLegalAccordion(sections, -1) +
+        renderSignatureSection(true) +
+        '</div>'
       : '<div class="card center"><p class="muted">This agreement is already ' +
         escapeHtml(agreement.status.toLowerCase()) +
         '.</p></div>';
