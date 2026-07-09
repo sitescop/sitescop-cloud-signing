@@ -316,6 +316,22 @@
           section.contentHtml = plainTextToSigningHtml(section.content);
         }
       });
+      if (isAgentSigning(agreement)) {
+        var hasAgentSection = agreement.legalSections.sections.some(function (section) {
+          return section.id === 'agent-authority';
+        });
+        if (!hasAgentSection) {
+          agreement.legalSections.sections = withAgentAuthoritySection(
+            agreement.legalSections.sections,
+            {
+              agentName: agreement.agentName,
+              agencyName: agreement.agencyName,
+              clientName: agreement.clientName,
+              propertyAddress: agreement.propertyAddress,
+            },
+          );
+        }
+      }
     }
     return agreement;
   }
@@ -423,7 +439,64 @@
   }
 
   function isAgentSigning(agreement) {
-    return agreement.signerRole === 'AGENT' && agreement.agentName;
+    if (agreement.signerRole === 'CLIENT') return false;
+    return Boolean(agreement.agentName && String(agreement.agentName).trim());
+  }
+
+  function buildAgentAuthoritySection(ctx) {
+    var agency = ctx.agencyName && String(ctx.agencyName).trim() ? ctx.agencyName : 'the listed real estate agency';
+    var contentHtml =
+      '<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p>' +
+      '<div class="legal-callout legal-callout-warning"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client\'s express authority to accept this agreement on their behalf.</p></div>' +
+      '<h3 class="legal-subhead">1. Identity</h3>' +
+      '<p>I confirm I am <strong>' +
+      escapeHtml(ctx.agentName) +
+      '</strong> of <strong>' +
+      escapeHtml(agency) +
+      '</strong> (the <strong>Agent</strong>).</p>' +
+      '<h3 class="legal-subhead">2. Authority to act</h3>' +
+      '<p>I confirm I have the <strong>express authority</strong> of <strong>' +
+      escapeHtml(ctx.clientName) +
+      '</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client\'s behalf for the property at <strong>' +
+      escapeHtml(ctx.propertyAddress) +
+      '</strong>.</p>' +
+      '<h3 class="legal-subhead">3. Client awareness</h3>' +
+      '<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions, Privacy Policy and Client Declaration; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>' +
+      '<h3 class="legal-subhead">4. Binding effect</h3>' +
+      '<p>I understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and <strong>binds the Client</strong> to this agreement as their authorised representative.</p>' +
+      '<h3 class="legal-subhead">5. Agent responsibility</h3>' +
+      '<p>SiteScop Pty Ltd relies on this declaration. The Agent accepts responsibility for ensuring they are authorised to sign for the Client.</p>' +
+      '<div class="legal-callout legal-callout-note"><p>The Client remains the party to whom the inspection is provided. This agreement does not permit third parties to rely on the Inspection Report without SiteScop\'s written consent.</p></div>';
+  return {
+      id: 'agent-authority',
+      title: 'Agent Authority Declaration',
+      content: 'Agent Authority Declaration',
+      contentHtml: contentHtml,
+    };
+  }
+
+  function withAgentAuthoritySection(sections, ctx) {
+    var agentSection = buildAgentAuthoritySection(ctx);
+    var withoutAgent = sections.filter(function (section) {
+      return section.id !== 'agent-authority';
+    });
+    var declIndex = -1;
+    for (var i = 0; i < withoutAgent.length; i++) {
+      var section = withoutAgent[i];
+      if (
+        section.id === 'client-declaration' ||
+        String(section.title || '')
+          .toLowerCase()
+          .indexOf('client declaration') >= 0
+      ) {
+        declIndex = i;
+        break;
+      }
+    }
+    if (declIndex < 0) {
+      return withoutAgent.concat([agentSection]);
+    }
+    return withoutAgent.slice(0, declIndex + 1).concat([agentSection], withoutAgent.slice(declIndex + 1));
   }
 
   function signingHintText(agreement) {
