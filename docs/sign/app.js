@@ -459,29 +459,23 @@
     });
   }
 
+  function isClientDeclarationSection(section) {
+    return (
+      section.id === 'client-declaration' ||
+      String(section.title || '')
+        .toLowerCase()
+        .indexOf('client declaration') >= 0
+    );
+  }
+
   function buildSectionsForParty(agreement, party) {
     var baseSections = stripAgentAuthoritySection(agreement.legalSections.sections || []);
     if (party === 'AGENT' && agentSigningAvailable(agreement)) {
+      baseSections = baseSections.filter(function (section) {
+        return !isClientDeclarationSection(section);
+      });
       if (agreement.agentAuthoritySection && agreement.agentAuthoritySection.id) {
-        var declIndex = -1;
-        for (var i = 0; i < baseSections.length; i++) {
-          if (
-            baseSections[i].id === 'client-declaration' ||
-            String(baseSections[i].title || '')
-              .toLowerCase()
-              .indexOf('client declaration') >= 0
-          ) {
-            declIndex = i;
-            break;
-          }
-        }
-        if (declIndex < 0) {
-          baseSections = baseSections.concat([agreement.agentAuthoritySection]);
-        } else {
-          baseSections = baseSections
-            .slice(0, declIndex + 1)
-            .concat([agreement.agentAuthoritySection], baseSections.slice(declIndex + 1));
-        }
+        baseSections = baseSections.concat([agreement.agentAuthoritySection]);
       } else {
         baseSections = insertAgentAuthoritySection(baseSections, agreement);
       }
@@ -523,7 +517,7 @@
       escapeHtml(ctx.propertyAddress) +
       '</strong>.</p>' +
       '<h3 class="legal-subhead">3. Client awareness</h3>' +
-      '<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions, Privacy Policy and Client Declaration; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>' +
+      '<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions and Privacy Policy forming part of this agreement; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>' +
       '<h3 class="legal-subhead">4. Binding effect</h3>' +
       '<p>I understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and <strong>binds the Client</strong> to this agreement as their authorised representative.</p>' +
       '<h3 class="legal-subhead">5. Agent responsibility</h3>' +
@@ -542,44 +536,82 @@
     var withoutAgent = sections.filter(function (section) {
       return section.id !== 'agent-authority';
     });
-    var declIndex = -1;
+    var privacyIndex = -1;
     for (var i = 0; i < withoutAgent.length; i++) {
       var section = withoutAgent[i];
       if (
-        section.id === 'client-declaration' ||
+        section.id === 'privacy-policy' ||
         String(section.title || '')
           .toLowerCase()
-          .indexOf('client declaration') >= 0
+          .indexOf('privacy') >= 0
       ) {
-        declIndex = i;
+        privacyIndex = i;
         break;
       }
     }
-    if (declIndex < 0) {
+    if (privacyIndex < 0) {
       return withoutAgent.concat([agentSection]);
     }
-    return withoutAgent.slice(0, declIndex + 1).concat([agentSection], withoutAgent.slice(declIndex + 1));
+    return withoutAgent
+      .slice(0, privacyIndex + 1)
+      .concat([agentSection], withoutAgent.slice(privacyIndex + 1));
   }
 
   function signingHintText(agreement) {
     if (isAgentSigning(agreement)) {
-      return 'Please read each section. Your signature unlocks after you open the Client Declaration and Agent Authority Declaration.';
+      return 'Please read each section. Your signature unlocks after you open the Agent Authority Declaration.';
     }
     return 'Please read each section. Your signature unlocks after you open the Client Declaration.';
   }
 
   function signatureLockNotice(agreement) {
     if (isAgentSigning(agreement)) {
-      return 'Please open the Client Declaration and Agent Authority Declaration above before signing.';
+      return 'Please open the Agent Authority Declaration above before signing.';
     }
     return 'Please open the Client Declaration section above before signing.';
   }
 
   function canUnlockSignature(state, agreement) {
     if (isAgentSigning(agreement)) {
-      return state.completed.declaration && state.completed.agent;
+      return state.completed.agent;
     }
     return state.completed.declaration;
+  }
+
+  function renderAgreementSummary(agreement) {
+    var agentBlock =
+      isAgentSigning(agreement) || (agreement.agentName && agentSigningAvailable(agreement))
+        ? '<div class="summary-item"><div class="label">Agent</div><div class="summary-value">' +
+          escapeHtml(agreement.agentName || '') +
+          '</div>' +
+          (agreement.agencyName
+            ? '<div class="summary-sub">' + escapeHtml(agreement.agencyName) + '</div>'
+            : '') +
+          '</div>'
+        : '';
+    return (
+      '<div class="agreement-summary">' +
+      '<div class="summary-item"><div class="label">Client</div><div class="summary-value">' +
+      escapeHtml(agreement.clientName) +
+      '</div><div class="summary-sub">' +
+      escapeHtml(agreement.clientEmail) +
+      '</div></div>' +
+      '<div class="summary-item"><div class="label">Date</div><div class="summary-value">' +
+      formatDate(agreement.agreementDate) +
+      '</div></div>' +
+      agentBlock +
+      '<div class="summary-item summary-item-wide"><div class="label">Address</div><div class="summary-value">' +
+      escapeHtml(agreement.propertyAddress) +
+      '</div></div>' +
+      (isAgentSigning(agreement)
+        ? '<div class="summary-item summary-item-wide"><div class="label">Signing as</div><div class="summary-value">Agent — on behalf of ' +
+          escapeHtml(agreement.clientName) +
+          '</div></div>'
+        : agreement.selectedSigningParty === 'CLIENT' && agentSigningAvailable(agreement)
+          ? '<div class="summary-item summary-item-wide"><div class="label">Signing as</div><div class="summary-value">Client</div></div>'
+          : '') +
+      '</div>'
+    );
   }
 
   function renderProgressBar(state, agreement) {
@@ -587,10 +619,11 @@
       { id: 'overview', label: 'Agreement' },
       { id: 'terms', label: 'Terms' },
       { id: 'privacy', label: 'Privacy' },
-      { id: 'declaration', label: 'Declaration' },
     ];
     if (isAgentSigning(agreement)) {
       steps.push({ id: 'agent', label: 'Agent' });
+    } else {
+      steps.push({ id: 'declaration', label: 'Declaration' });
     }
     steps.push({ id: 'signature', label: 'Signature' });
 
@@ -668,31 +701,8 @@
       escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
       '</p>' +
       '</div></div>' +
-      '<div class="agreement-summary">' +
-      '<div class="summary-item"><div class="label">Client</div><div class="summary-value">' +
-      escapeHtml(agreement.clientName) +
-      '</div><div class="summary-sub">' +
-      escapeHtml(agreement.clientEmail) +
-      '</div></div>' +
-      '<div class="summary-item summary-item-wide"><div class="label">Property</div><div class="summary-value">' +
-      escapeHtml(agreement.propertyAddress) +
-      '</div></div>' +
-      '<div class="summary-item"><div class="label">Agreement date</div><div class="summary-value">' +
-      formatDate(agreement.agreementDate) +
-      '</div></div>' +
-      (isAgentSigning(agreement)
-        ? '<div class="summary-item summary-item-wide"><div class="label">Signing as</div><div class="summary-value">Agent — ' +
-          escapeHtml(agreement.agentName) +
-          '</div><div class="summary-sub">On behalf of ' +
-          escapeHtml(agreement.clientName) +
-          (agreement.agencyName ? ' · ' + escapeHtml(agreement.agencyName) : '') +
-          '</div></div>'
-        : agreement.selectedSigningParty === 'CLIENT' && agentSigningAvailable(agreement)
-          ? '<div class="summary-item summary-item-wide"><div class="label">Signing as</div><div class="summary-value">Client</div><div class="summary-sub">' +
-            escapeHtml(agreement.clientName) +
-            '</div></div>'
-          : '') +
-      '</div></div>'
+      renderAgreementSummary(agreement) +
+      '</div>'
     );
   }
 
@@ -1005,14 +1015,8 @@
         escapeHtml(TYPE_LABELS[agreement.inspectionType] || agreement.inspectionType) +
         '</p>' +
         '</div></div>' +
-        '<div class="agreement-summary">' +
-        '<div class="summary-item"><div class="label">Client</div><div class="summary-value">' +
-        escapeHtml(agreement.clientName) +
-        '</div></div>' +
-        '<div class="summary-item summary-item-wide"><div class="label">Property</div><div class="summary-value">' +
-        escapeHtml(agreement.propertyAddress) +
-        '</div></div>' +
-        '</div></div>' +
+        renderAgreementSummary(agreement) +
+        '</div>' +
         '<div class="card signing-party-card">' +
         '<h2 class="signing-party-title">Who is signing?</h2>' +
         '<p class="signing-party-lead">Select whether you are the purchaser/client or the real estate agent signing on the client\'s behalf.</p>' +
