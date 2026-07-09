@@ -5,7 +5,7 @@
   "publicView": {
     "id": "4feb02e9-49b9-42fe-a620-f896d8b81bfb",
     "agreementNumber": "AGR-2026-0007",
-    "status": "SENT",
+    "status": "VIEWED",
     "inspectionType": "COMBINED",
     "companyName": "Sitescop PTY LTD",
     "companyPhone": "0401 427 366",
@@ -50,7 +50,7 @@
     },
     "canSign": true
   },
-  "sentAt": "2026-07-09T05:42:44.642Z",
+  "sentAt": "2026-07-09T05:42:51.062Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/1edbde4accfe070364a2d9ce08472bd7e431528fe4b088bb"
   }
