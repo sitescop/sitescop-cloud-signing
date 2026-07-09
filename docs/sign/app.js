@@ -302,7 +302,7 @@
     } catch (e) {
       /* config not loaded yet */
     }
-    return './logo.svg';
+    return './logo.jpeg';
   }
 
   function enrichAgreementForPortal(agreement) {
@@ -475,12 +475,13 @@
   }
 
   function renderAgreementLogo(agreement) {
+    var logoUrl = portalLogoUrl(agreement);
     return (
       '<img class="agreement-logo" src="' +
-      escapeHtml(portalLogoUrl(agreement)) +
+      escapeHtml(logoUrl) +
       '" alt="' +
       escapeHtml(agreement.companyName) +
-      '" />'
+      '" onerror="this.onerror=null;this.src=\'./logo.jpeg\';" />'
     );
   }
 
