@@ -6,6 +6,7 @@
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
+  const PORTAL_BUILD = 19;
   const token = new URLSearchParams(location.search).get('token') || '';
 
   function cfg() {
@@ -136,7 +137,13 @@
   }
 
   function utf8ToBase64(text) {
-    return btoa(unescape(encodeURIComponent(text)));
+    const bytes = new TextEncoder().encode(text);
+    let binary = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(binary);
   }
 
   async function githubPutJson(contentsUrl, branch, token, message, payload) {
@@ -152,14 +159,21 @@
       if (existing.ok) {
         const meta = await existing.json();
         sha = meta && meta.sha ? meta.sha : null;
+      } else if (existing.status === 401 || existing.status === 403) {
+        throw new Error(
+          'GitHub refused the signing token (' +
+            existing.status +
+            '). Ask your inspector to check the GitHub PAT in SiteScop Settings.',
+        );
       }
-    } catch (_) {
+    } catch (e) {
+      if (e && e.message && /GitHub refused|PAT/i.test(e.message)) throw e;
       // continue — file may not exist yet
     }
 
     const body = {
       message: message,
-      content: utf8ToBase64(JSON.stringify(payload, null, 2)),
+      content: utf8ToBase64(JSON.stringify(payload)),
       branch: branch || 'main',
     };
     if (sha) body.sha = sha;
@@ -177,7 +191,9 @@
         body: JSON.stringify(body),
       });
     } catch (_) {
-      throw new Error('Network error — could not reach GitHub to save the signature.');
+      throw new Error(
+        'Network error — could not save signature to GitHub. Check internet connection and try again.',
+      );
     }
 
     if (!res.ok) {
@@ -186,6 +202,10 @@
         const errBody = await res.json();
         if (errBody && errBody.message) detail = errBody.message;
       } catch (_) {}
+      if (res.status === 401 || res.status === 403) {
+        detail =
+          'GitHub token cannot write signatures. Ask your inspector to update GitHub Settings / Resend the agreement.';
+      }
       throw new Error(detail);
     }
     return true;
@@ -215,14 +235,26 @@
 
   async function relayWithFallback(pending, suffix, options) {
     const endpoints = submitEndpoints(pending);
+    const hasGithub = endpoints.some(function (e) {
+      return e.type === 'github';
+    });
+    const isViewed = suffix === '/viewed';
+
+    if (!hasGithub && !isViewed) {
+      throw new Error(
+        'This signing link is outdated (no GitHub submit path). Ask your inspector to open SiteScop → Update cloud page or Resend, then open this link again (hard refresh / clear cache).',
+      );
+    }
+
     if (!endpoints.length) {
+      if (isViewed) return null;
       throw new Error(
         'This agreement has no secure signing path. Ask your inspector to re-send the link from SiteScop.',
       );
     }
 
-    const isViewed = suffix === '/viewed';
     let lastError = null;
+    let githubError = null;
 
     for (let i = 0; i < endpoints.length; i += 1) {
       const endpoint = endpoints[i];
@@ -253,18 +285,35 @@
               signingParty: payload.signingParty,
               agentAuthorityAccepted: payload.agentAuthorityAccepted,
               signedAt: new Date().toISOString(),
+              portalBuild: PORTAL_BUILD,
             },
           );
           return null;
         }
 
+        if (isViewed && hasGithub) {
+          // Prefer GitHub for viewed; skip relay noise.
+          continue;
+        }
+
+        // When hosted GitHub submit is configured, do not fall back to LAN/public relay.
+        // Relay is unreachable when the inspector PC is off and shows a misleading error.
+        if (hasGithub) {
+          continue;
+        }
+
         return await relayRequest(endpoint.url, suffix, options);
       } catch (e) {
         lastError = e;
-        if (i === endpoints.length - 1) throw e;
+        if (endpoint.type === 'github') githubError = e;
+        if (i === endpoints.length - 1) {
+          if (githubError) throw githubError;
+          throw e;
+        }
       }
     }
-    throw lastError || new Error('Could not submit the signature.');
+    if (isViewed) return null;
+    throw githubError || lastError || new Error('Could not submit the signature.');
   }
 
   function setAppContent(html) {
