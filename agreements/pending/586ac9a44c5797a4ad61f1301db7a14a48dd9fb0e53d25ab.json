@@ -17,8 +17,8 @@
     "agencyName": null,
     "agentName": null,
     "agentEmail": null,
-    "clientName": "Ruby Nazar",
-    "clientEmail": "af_sh63@yahoo.com",
+    "clientName": "Ruby Nazari",
+    "clientEmail": "afshinsobbi@gmail.com",
     "propertyAddress": "14 Tinonee pl hoxton park nsw 2171",
     "priceCents": 49900,
     "gstCents": 4990,
@@ -62,7 +62,7 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-13T02:31:04.578Z",
+  "sentAt": "2026-07-13T02:33:23.484Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab",
     "public": "https://waiver-cocktail-ease-mechanical.trycloudflare.com/api/sign/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab",
@@ -72,7 +72,7 @@
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab.json",
-      "tokenCipher": "v1.LP0lU5tFXTd3PJO2k3dTSqtZbjFG9VaF9T0sLwhCYY11w+10qqvXL6+TLSERVcRWrUlsCdOifqGsUuxnKxc/wt+y1TXc8+YgHpWOcUay0wFfKoGs+PMc38JLLkYRHughWL8Od2Z3/aHiWnA+aMsRY3XaTyG91kO36w=="
+      "tokenCipher": "v1.dap6rFseskDtFhfOTF25dLNGtw72oje/mtOTLDYb1c1swsfvv3bwXNTQ0bM8SS1irssJ+PeQkZU5wNOAkhXFaxZbpDzyDVoMInOZS04d/FnZwSxU66dD0cRgNBIF0lrJexGY97NOe2CRkyWeqpB3V+bOaPIuPo5pOA=="
     }
   }
 }
