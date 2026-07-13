@@ -62,7 +62,7 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-13T01:57:56.661Z",
+  "sentAt": "2026-07-13T01:58:07.251Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd",
     "public": "https://qld-explaining-ian-copyrighted.trycloudflare.com/api/sign/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd",
@@ -72,7 +72,7 @@
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd.json",
-      "tokenCipher": "v1.AXjq/rlvmj0DkKWSG12a9Dsf4s+3eWzu+wBf7p75xA8FMr3JWCVM1r3V51FDgeR1vAdg5nwLrkr0Q68yjjC16m9jzXo8JMj5rfzOlwiETuBY+Lynr2N7ATumFYX/E0u/fNiZqwhi6YzwWCHrfFvO5G8DxnnE2j+huA=="
+      "tokenCipher": "v1.TdOS3RqmpuVGzG6ZJCuR17RTweVV6BLevAmi7AYmKnUBKRjbRT8Wa9NZn6xErDTXK3L37KSHn4y/ktcuRWJYL1L1AEOnN741WbTmyA9PNbnihaN+b6hiIspwbb0Lti3eT7pxa8LJgbBwJkidJ7JixYgoH1EBEfkaUw=="
     }
   }
 }
