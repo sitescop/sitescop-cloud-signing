@@ -62,7 +62,7 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-13T02:29:07.090Z",
+  "sentAt": "2026-07-13T02:31:04.578Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab",
     "public": "https://waiver-cocktail-ease-mechanical.trycloudflare.com/api/sign/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab",
@@ -72,7 +72,7 @@
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/586ac9a44c5797a4ad61f1301db7a14a48dd9fb0e53d25ab.json",
-      "tokenCipher": "v1.auHVvwhEV4PiMgp/iipmR0M3q+f77zoTknhmKmMZ71GXTEQsrrBR47zCvj2SfhDPnQRpPWdctkWDD7XoxH9E1YZXlNJkTGlx7YKEbQpIUB6YPmXqEoxdmdJxSVPujsbKTKbl/yGXQGreismpI7RMxvwMUkUtKJobFQ=="
+      "tokenCipher": "v1.LP0lU5tFXTd3PJO2k3dTSqtZbjFG9VaF9T0sLwhCYY11w+10qqvXL6+TLSERVcRWrUlsCdOifqGsUuxnKxc/wt+y1TXc8+YgHpWOcUay0wFfKoGs+PMc38JLLkYRHughWL8Od2Z3/aHiWnA+aMsRY3XaTyG91kO36w=="
     }
   }
 }
