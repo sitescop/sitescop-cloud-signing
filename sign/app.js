@@ -6,7 +6,7 @@
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
-  const PORTAL_BUILD = 19;
+  const PORTAL_BUILD = 20;
   const token = new URLSearchParams(location.search).get('token') || '';
 
   function cfg() {
@@ -128,7 +128,12 @@
     const endpoints = [];
     const relay = pending && pending.submitEndpoints;
     // Prefer GitHub hosted submit first — works when the inspector PC is offline.
-    if (relay && relay.github && relay.github.token && relay.github.signedContentsUrl) {
+    if (
+      relay &&
+      relay.github &&
+      relay.github.signedContentsUrl &&
+      (relay.github.tokenCipher || relay.github.token)
+    ) {
       endpoints.push({ type: 'github', github: relay.github });
     }
     if (relay && relay.public) endpoints.push({ type: 'http', url: relay.public });
@@ -136,14 +141,54 @@
     return endpoints;
   }
 
-  function utf8ToBase64(text) {
-    const bytes = new TextEncoder().encode(text);
+  function bytesToBase64(bytes) {
     let binary = '';
     const chunk = 0x8000;
     for (let i = 0; i < bytes.length; i += chunk) {
       binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
     }
     return btoa(binary);
+  }
+
+  function utf8ToBase64(text) {
+    return bytesToBase64(new TextEncoder().encode(text));
+  }
+
+  function base64ToBytes(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  /** Decrypt tokenCipher sealed by SiteScop (AES-GCM, key = SHA-256 of access token). */
+  async function resolveGithubWriteToken(gh) {
+    if (gh.tokenCipher && String(gh.tokenCipher).indexOf('v1.') === 0) {
+      try {
+        const packed = base64ToBytes(String(gh.tokenCipher).slice(3));
+        const iv = packed.slice(0, 12);
+        const tag = packed.slice(12, 28);
+        const data = packed.slice(28);
+        const keyMaterial = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode('sitescop-sign-v1:' + token),
+        );
+        const key = await crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['decrypt']);
+        const combined = new Uint8Array(data.length + tag.length);
+        combined.set(data);
+        combined.set(tag, data.length);
+        const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, combined);
+        return new TextDecoder().decode(plain);
+      } catch (_) {
+        throw new Error(
+          'Could not unlock the secure signing key. Ask your inspector to Update cloud page / Resend this agreement.',
+        );
+      }
+    }
+    if (gh.token) return gh.token;
+    throw new Error(
+      'This signing link is missing a secure GitHub submit key. Ask your inspector to Update cloud page.',
+    );
   }
 
   async function githubPutJson(contentsUrl, branch, token, message, payload) {
@@ -261,11 +306,12 @@
       try {
         if (endpoint.type === 'github') {
           const gh = endpoint.github;
+          const writeToken = await resolveGithubWriteToken(gh);
           if (isViewed) {
             await githubPutJson(
               gh.viewedContentsUrl,
               gh.branch,
-              gh.token,
+              writeToken,
               'SiteScop Cloud Signing: agreement viewed',
               { token: token, viewedAt: new Date().toISOString() },
             );
@@ -275,7 +321,7 @@
           await githubPutJson(
             gh.signedContentsUrl,
             gh.branch,
-            gh.token,
+            writeToken,
             'SiteScop Cloud Signing: client signed (hosted submit)',
             {
               token: token,
