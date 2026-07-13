@@ -18,7 +18,7 @@
     "agentName": null,
     "agentEmail": null,
     "clientName": "ashotn koocher",
-    "clientEmail": "af_sh63@yahoo",
+    "clientEmail": "af_sh63@yahoo.com",
     "propertyAddress": "15",
     "priceCents": 49900,
     "gstCents": 4990,
@@ -62,8 +62,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-13T00:50:08.074Z",
+  "sentAt": "2026-07-13T01:57:56.661Z",
   "submitEndpoints": {
-    "lan": "http://192.168.1.103:38765/api/sign/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd"
+    "lan": "http://192.168.1.103:38765/api/sign/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd",
+    "public": "https://qld-explaining-ian-copyrighted.trycloudflare.com/api/sign/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd",
+    "github": {
+      "owner": "sitescop",
+      "repo": "sitescop-cloud-signing",
+      "branch": "main",
+      "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd.json",
+      "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/636722cb241e9c9a332310487cf7fd449f2eed578b9b10fd.json",
+      "tokenCipher": "v1.AXjq/rlvmj0DkKWSG12a9Dsf4s+3eWzu+wBf7p75xA8FMr3JWCVM1r3V51FDgeR1vAdg5nwLrkr0Q68yjjC16m9jzXo8JMj5rfzOlwiETuBY+Lynr2N7ATumFYX/E0u/fNiZqwhi6YzwWCHrfFvO5G8DxnnE2j+huA=="
+    }
   }
 }
