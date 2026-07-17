@@ -1,10 +1,12 @@
 /* SiteScop V6 — GitHub Cloud Signing (GitHub Pages client portal)
  * Reads agreement data from public raw GitHub URLs.
- * Submits signatures via the SiteScop desktop signing relay (no secrets in browser). */
+ * Submits signatures to GitHub (hosted) when available — works while SiteScop PC is off —
+ * and falls back to the desktop signing relay when the inspector PC is online. */
 (function () {
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
+  const PORTAL_BUILD = 20;
   const token = new URLSearchParams(location.search).get('token') || '';
 
   function cfg() {
@@ -125,9 +127,133 @@
   function submitEndpoints(pending) {
     const endpoints = [];
     const relay = pending && pending.submitEndpoints;
-    if (relay && relay.public) endpoints.push(relay.public);
-    if (relay && relay.lan) endpoints.push(relay.lan);
+    // Prefer GitHub hosted submit first — works when the inspector PC is offline.
+    if (
+      relay &&
+      relay.github &&
+      relay.github.signedContentsUrl &&
+      (relay.github.tokenCipher || relay.github.token)
+    ) {
+      endpoints.push({ type: 'github', github: relay.github });
+    }
+    if (relay && relay.public) endpoints.push({ type: 'http', url: relay.public });
+    if (relay && relay.lan) endpoints.push({ type: 'http', url: relay.lan });
     return endpoints;
+  }
+
+  function bytesToBase64(bytes) {
+    let binary = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(binary);
+  }
+
+  function utf8ToBase64(text) {
+    return bytesToBase64(new TextEncoder().encode(text));
+  }
+
+  function base64ToBytes(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  /** Decrypt tokenCipher sealed by SiteScop (AES-GCM, key = SHA-256 of access token). */
+  async function resolveGithubWriteToken(gh) {
+    if (gh.tokenCipher && String(gh.tokenCipher).indexOf('v1.') === 0) {
+      try {
+        const packed = base64ToBytes(String(gh.tokenCipher).slice(3));
+        const iv = packed.slice(0, 12);
+        const tag = packed.slice(12, 28);
+        const data = packed.slice(28);
+        const keyMaterial = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode('sitescop-sign-v1:' + token),
+        );
+        const key = await crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['decrypt']);
+        const combined = new Uint8Array(data.length + tag.length);
+        combined.set(data);
+        combined.set(tag, data.length);
+        const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, combined);
+        return new TextDecoder().decode(plain);
+      } catch (_) {
+        throw new Error(
+          'Could not unlock the secure signing key. Ask your inspector to Update cloud page / Resend this agreement.',
+        );
+      }
+    }
+    if (gh.token) return gh.token;
+    throw new Error(
+      'This signing link is missing a secure GitHub submit key. Ask your inspector to Update cloud page.',
+    );
+  }
+
+  async function githubPutJson(contentsUrl, branch, token, message, payload) {
+    let sha = null;
+    try {
+      const existing = await fetch(contentsUrl, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+      if (existing.ok) {
+        const meta = await existing.json();
+        sha = meta && meta.sha ? meta.sha : null;
+      } else if (existing.status === 401 || existing.status === 403) {
+        throw new Error(
+          'GitHub refused the signing token (' +
+            existing.status +
+            '). Ask your inspector to check the GitHub PAT in SiteScop Settings.',
+        );
+      }
+    } catch (e) {
+      if (e && e.message && /GitHub refused|PAT/i.test(e.message)) throw e;
+      // continue — file may not exist yet
+    }
+
+    const body = {
+      message: message,
+      content: utf8ToBase64(JSON.stringify(payload)),
+      branch: branch || 'main',
+    };
+    if (sha) body.sha = sha;
+
+    let res;
+    try {
+      res = await fetch(contentsUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/vnd.github+json',
+          'Content-Type': 'application/json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (_) {
+      throw new Error(
+        'Network error — could not save signature to GitHub. Check internet connection and try again.',
+      );
+    }
+
+    if (!res.ok) {
+      let detail = 'GitHub submit failed (' + res.status + ').';
+      try {
+        const errBody = await res.json();
+        if (errBody && errBody.message) detail = errBody.message;
+      } catch (_) {}
+      if (res.status === 401 || res.status === 403) {
+        detail =
+          'GitHub token cannot write signatures. Ask your inspector to update GitHub Settings / Resend the agreement.';
+      }
+      throw new Error(detail);
+    }
+    return true;
   }
 
   async function relayRequest(baseUrl, suffix, options) {
@@ -154,22 +280,86 @@
 
   async function relayWithFallback(pending, suffix, options) {
     const endpoints = submitEndpoints(pending);
-    if (!endpoints.length) {
+    const hasGithub = endpoints.some(function (e) {
+      return e.type === 'github';
+    });
+    const isViewed = suffix === '/viewed';
+
+    if (!hasGithub && !isViewed) {
       throw new Error(
-        'This agreement has no secure signing relay. Ask your inspector to re-send the link from SiteScop.',
+        'This signing link is outdated (no GitHub submit path). Ask your inspector to open SiteScop → Update cloud page or Resend, then open this link again (hard refresh / clear cache).',
+      );
+    }
+
+    if (!endpoints.length) {
+      if (isViewed) return null;
+      throw new Error(
+        'This agreement has no secure signing path. Ask your inspector to re-send the link from SiteScop.',
       );
     }
 
     let lastError = null;
+    let githubError = null;
+
     for (let i = 0; i < endpoints.length; i += 1) {
+      const endpoint = endpoints[i];
       try {
-        return await relayRequest(endpoints[i], suffix, options);
+        if (endpoint.type === 'github') {
+          const gh = endpoint.github;
+          const writeToken = await resolveGithubWriteToken(gh);
+          if (isViewed) {
+            await githubPutJson(
+              gh.viewedContentsUrl,
+              gh.branch,
+              writeToken,
+              'SiteScop Cloud Signing: agreement viewed',
+              { token: token, viewedAt: new Date().toISOString() },
+            );
+            return null;
+          }
+          const payload = JSON.parse(options.body || '{}');
+          await githubPutJson(
+            gh.signedContentsUrl,
+            gh.branch,
+            writeToken,
+            'SiteScop Cloud Signing: client signed (hosted submit)',
+            {
+              token: token,
+              signatureName: payload.signatureName,
+              signatureData: payload.signatureData,
+              declarationsAccepted: payload.declarationsAccepted,
+              signingParty: payload.signingParty,
+              agentAuthorityAccepted: payload.agentAuthorityAccepted,
+              signedAt: new Date().toISOString(),
+              portalBuild: PORTAL_BUILD,
+            },
+          );
+          return null;
+        }
+
+        if (isViewed && hasGithub) {
+          // Prefer GitHub for viewed; skip relay noise.
+          continue;
+        }
+
+        // When hosted GitHub submit is configured, do not fall back to LAN/public relay.
+        // Relay is unreachable when the inspector PC is off and shows a misleading error.
+        if (hasGithub) {
+          continue;
+        }
+
+        return await relayRequest(endpoint.url, suffix, options);
       } catch (e) {
         lastError = e;
-        if (i === endpoints.length - 1) throw e;
+        if (endpoint.type === 'github') githubError = e;
+        if (i === endpoints.length - 1) {
+          if (githubError) throw githubError;
+          throw e;
+        }
       }
     }
-    throw lastError || new Error('Could not reach the SiteScop signing relay.');
+    if (isViewed) return null;
+    throw githubError || lastError || new Error('Could not submit the signature.');
   }
 
   function setAppContent(html) {
@@ -196,7 +386,7 @@
         '<p class="muted">Thank you. Agreement <strong>' +
         escapeHtml(agreementNumber) +
         '</strong> has been submitted securely.</p>' +
-        '<p class="muted">We will be in touch shortly regarding your inspection.</p>' +
+        '<p class="muted">Your inspector will see this signature when SiteScop next syncs (usually when they open the app).</p>' +
         '</div>' +
         renderPortalFooter(agreement) +
         '</div>',
