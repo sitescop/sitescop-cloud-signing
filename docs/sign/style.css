@@ -1048,19 +1048,41 @@ button:active:not(:disabled) {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .portal-footer-title {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--primary);
 }
 
+/* Wrapping chip layout: phone / email / website / ABN each drop to the
+   next line on small screens instead of overflowing the card. */
 .portal-footer-contact {
-  margin: 0 0 8px;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  margin: 0 0 10px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.portal-footer-contact a,
+.portal-footer-contact > span:not(.portal-footer-sep) {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  background: rgba(27, 67, 50, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
 }
 
 .portal-footer-contact a {
@@ -1073,15 +1095,20 @@ button:active:not(:disabled) {
   text-decoration: underline;
 }
 
-.portal-footer-sep {
-  margin: 0 8px;
+.portal-footer-contact > span:not(.portal-footer-sep) {
   color: var(--muted);
+}
+
+/* Chips replace the dot separators */
+.portal-footer-sep {
+  display: none;
 }
 
 .portal-footer-note {
   margin: 0;
   font-size: 0.82rem;
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .signing-party-card {
