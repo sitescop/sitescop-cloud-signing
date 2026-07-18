@@ -5,7 +5,7 @@
   "publicView": {
     "id": "cedff28a-b9b2-4f22-a632-07cb52a1be7d",
     "agreementNumber": "AGR-2026-0010",
-    "status": "SENT",
+    "status": "VIEWED",
     "inspectionType": "BUILDING",
     "companyName": "Sitescop PTY LTD",
     "companyPhone": "0401 427 366",
@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-18T08:44:20.144Z",
+  "sentAt": "2026-07-18T11:37:12.637Z",
   "submitEndpoints": {
-    "lan": "http://192.168.4.28:38765/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
-    "public": "https://cliff-careers-yea-valium.trycloudflare.com/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
+    "lan": "http://192.168.1.103:38765/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
+    "public": "https://hope-informed-hazards-todd.trycloudflare.com/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf.json",
-      "tokenCipher": "v1.954WPbMyZHAYerjgc9iQ9GX4/pSIbNbZtnYZFG7n0G22THF41PTRTlutEv0+e8SfyAOUYwEZ5siJskHNAesBYXy8Il3WsnUSeO92nyQVPeiX24XqoK4xVxrzQuNpHWe7Aw493YW69TPW/LauwDzbsHXKL9YFJbizzw=="
+      "tokenCipher": "v1.8jj1g5DEP4wqX3hxw1YTd4ns+wv3/xnustElAwQByLZwEeN4P15u4UPm/UDm2I3MEVJaAb43qnLA+e5JS6fEEwGaiXLWwt0pgxO+tEAy8uXR1ua4zvGSx+wZOm5+DHGGLP6ypQDE/zCRNbGl84f/ParVt4xSPkO7eQ=="
     }
   }
 }
