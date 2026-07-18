@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-18T16:00:03.239Z",
+  "sentAt": "2026-07-18T20:51:53.653Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
-    "public": "https://jurisdiction-zshops-percentage-anna.trycloudflare.com/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
+    "public": "https://baker-hawaii-interested-adware.trycloudflare.com/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf.json",
-      "tokenCipher": "v1.MEYRYKuChisCJFAgz74vSz1aD7BCmQGsn2aSzNqPDksa/G95BsLUZyF4lflVwQAGPNhyFbkD0OsAxnJtUXTxq9X6kMC+/jtl5s6nIEpqaXQVsKgGBY3kO7w4VJOgsves6HzlpRok+qM8ii+JruOGCujQJwgi7HD+jw=="
+      "tokenCipher": "v1.+kwFA4XQTL6xFAFm6GGyXZjLR6iO8Zxb2qDuAktCsVIZJj2lbvxFJf05IWKEIxhRbkSdVCsVuoQPOmCAPCVnVz2CBaqGm4B3IkiqNOdoDgwrygcsL+9MtA30hcpIUwji2sXe+wZWcJYrBUSjohtZp4IeHt3qRcX6Bw=="
     }
   }
 }
