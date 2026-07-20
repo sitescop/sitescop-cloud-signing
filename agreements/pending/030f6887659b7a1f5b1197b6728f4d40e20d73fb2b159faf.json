@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-20T04:35:36.892Z",
+  "sentAt": "2026-07-20T05:16:59.332Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
-    "public": "https://attach-microphone-airports-skiing.trycloudflare.com/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
+    "public": "https://sherman-expert-disclose-demands.trycloudflare.com/api/sign/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/030f6887659b7a1f5b1197b6728f4d40e20d73fb2b159faf.json",
-      "tokenCipher": "v1.uqRhgLPUn0IsHSmsaPA4vp5og5wkr9LpjXYcZIMSeBdXvuns8BX/W6r2vFuip7e2T0lfSNmyF+Xn/2thQ+RE6swVj1N3PsRvlmFnmw+Pcslv0Du/uSD4FIYTNnSV63AE+gSzY6+d1TtMs8lmUtISTLCOXd+wMoFbUA=="
+      "tokenCipher": "v1.gqKpGLIorD8QMGvgErA0tZ8KnTaCGen1SDymmNCcqiJsYzzc+ul3o013voimlPrbb63oZl3XZpMzoACew9qRjA3HQum3Mg5+H1rGaY+jjmRkkM/wUj6MXfvKaoi2bjOYwwG4+xxCqv99bSCnAB30/avDbrpxOk2Bog=="
     }
   }
 }
