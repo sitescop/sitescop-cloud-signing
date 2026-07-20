@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-20T03:28:02.140Z",
+  "sentAt": "2026-07-20T04:35:20.585Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
-    "public": "https://checkout-grows-motor-today.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
+    "public": "https://attach-microphone-airports-skiing.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
-      "tokenCipher": "v1.SkiI921hm9gNqUcwMxfFpI1VsxotCTyCVGoAAeizNrVLblwugozKSTK3JKAzstqEM0DdgaGjvwp9BuAzsBWEkx43/q69nn7TBnkmPBDwBZrnCTyWEOfH08Y2DmuVehkEkcovIyqVG3xJHaZ5wQRXr7Or6uFzfY8nvg=="
+      "tokenCipher": "v1.2QWa6BwEnjMoeHnK8LC3qh4/ybhrkuO9y/bDqt44WKM8q1OQKoAsnQ3uRIwPcjx8iTiQB8p0zuiDMnUKcB+ejh3HKFMMOf3MmyjQKjL7tO4vqp2ZvM6ChMWkaOHwJ1Aijy6V6qWnI3Bit2224ESQdciTN5f5bFII1Q=="
     }
   }
 }
