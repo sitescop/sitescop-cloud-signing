@@ -1,20 +1,34 @@
-/* SiteScop V6 — GitHub Cloud Signing (GitHub Pages client portal)
- * Reads agreement data from public raw GitHub URLs.
- * Submits signatures to GitHub (hosted) when available — works while SiteScop PC is off —
- * and falls back to the desktop signing relay when the inspector PC is online. */
+/* SiteScop V6 — Client signing portal
+ * Prefer Cloudflare Worker API (any Wi‑Fi, PC can be off).
+ * Falls back to GitHub raw/API when mode is github (legacy). */
 (function () {
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
-  const PORTAL_BUILD = 20;
+  const PORTAL_BUILD = 21;
   const token = new URLSearchParams(location.search).get('token') || '';
 
   function cfg() {
     const c = window.SITESCOP_SIGN_CONFIG;
-    if (!c || !c.owner || !c.repo) {
-      throw new Error('Missing config.js — copy config.example.js to config.js on GitHub.');
+    if (!c) {
+      throw new Error('Missing config.js — copy config.example.js to config.js.');
     }
+    const mode = (c.mode || (c.apiBaseUrl ? 'cloudflare' : 'github')).toLowerCase();
+    if (mode === 'cloudflare') {
+      if (!c.apiBaseUrl) {
+        throw new Error('config.js needs apiBaseUrl for Cloudflare signing.');
+      }
+    } else if (!c.owner || !c.repo) {
+      throw new Error('Missing GitHub owner/repo in config.js (or switch mode to cloudflare).');
+    }
+    c.mode = mode;
     return c;
+  }
+
+  function apiBase() {
+    return String(cfg().apiBaseUrl || '')
+      .trim()
+      .replace(/\/$/, '');
   }
 
   function rawGitHubUrl(path) {
@@ -113,6 +127,19 @@
   }
 
   async function fetchPendingAgreement() {
+    const c = cfg();
+    if (c.mode === 'cloudflare') {
+      let res;
+      try {
+        res = await fetch(apiBase() + '/v1/sign/' + encodeURIComponent(token));
+      } catch {
+        throw new Error('Network error — could not reach Cloudflare signing service.');
+      }
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error('Could not load agreement (' + res.status + ').');
+      return res.json();
+    }
+
     let res;
     try {
       res = await fetch(rawGitHubUrl('agreements/pending/' + token + '.json'));
@@ -127,7 +154,13 @@
   function submitEndpoints(pending) {
     const endpoints = [];
     const relay = pending && pending.submitEndpoints;
-    // Prefer GitHub hosted submit first — works when the inspector PC is offline.
+    // Cloudflare Worker first — works on any Wi‑Fi while PC is off.
+    if (relay && relay.api) {
+      endpoints.push({ type: 'http', url: relay.api });
+    } else if (cfg().mode === 'cloudflare' && apiBase()) {
+      endpoints.push({ type: 'http', url: apiBase() + '/v1/sign/' + encodeURIComponent(token) });
+    }
+    // Prefer GitHub hosted submit (legacy) when present.
     if (
       relay &&
       relay.github &&
@@ -280,14 +313,17 @@
 
   async function relayWithFallback(pending, suffix, options) {
     const endpoints = submitEndpoints(pending);
+    const hasCloudApi = endpoints.some(function (e) {
+      return e.type === 'http';
+    });
     const hasGithub = endpoints.some(function (e) {
       return e.type === 'github';
     });
     const isViewed = suffix === '/viewed';
 
-    if (!hasGithub && !isViewed) {
+    if (!hasCloudApi && !hasGithub && !isViewed) {
       throw new Error(
-        'This signing link is outdated (no GitHub submit path). Ask your inspector to open SiteScop → Update cloud page or Resend, then open this link again (hard refresh / clear cache).',
+        'This signing link is outdated (no submit path). Ask your inspector to Resend the agreement from SiteScop, then open this link again.',
       );
     }
 
