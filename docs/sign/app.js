@@ -5,8 +5,13 @@
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
-  const PORTAL_BUILD = 21;
-  const token = new URLSearchParams(location.search).get('token') || '';
+  const PORTAL_BUILD = 22;
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get('token') || '';
+  const partyParam = String(searchParams.get('party') || '')
+    .trim()
+    .toUpperCase();
+  const lockedParty = partyParam === 'AGENT' ? 'AGENT' : partyParam === 'CLIENT' ? 'CLIENT' : '';
 
   function cfg() {
     const c = window.SITESCOP_SIGN_CONFIG;
@@ -1388,6 +1393,16 @@
       void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
       var baseAgreement = enrichAgreementForPortal(pending.publicView, pending);
+      // Email links lock the party (?party=CLIENT|AGENT) so the correct terms show with no picker.
+      if (lockedParty === 'AGENT' && agentSigningAvailable(baseAgreement)) {
+        renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'AGENT'), pending);
+        return;
+      }
+      if (lockedParty === 'CLIENT' || lockedParty === 'AGENT') {
+        renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'CLIENT'), pending);
+        return;
+      }
+      // Legacy links (no party): keep picker when agent signing is available.
       if (baseAgreement.canSign && agentSigningAvailable(baseAgreement)) {
         renderSigningPartySelector(baseAgreement, function (party) {
           renderAgreement(prepareAgreementForSigningParty(baseAgreement, party), pending);
