@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-22T12:32:01.163Z",
+  "sentAt": "2026-07-22T13:18:01.139Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/38f141565d3a8879093378669a48ed897955582f3ce4d1b1",
-    "public": "https://boards-contracting-flip-exact.trycloudflare.com/api/sign/38f141565d3a8879093378669a48ed897955582f3ce4d1b1",
+    "public": "https://lighter-perspective-required-nature.trycloudflare.com/api/sign/38f141565d3a8879093378669a48ed897955582f3ce4d1b1",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/38f141565d3a8879093378669a48ed897955582f3ce4d1b1.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/38f141565d3a8879093378669a48ed897955582f3ce4d1b1.json",
-      "tokenCipher": "v1.S2qqQMffW7kBLlsn0rQswMGrjXEaxxY4GhvljbNRlPJGP3eQN73Kbovu1Gasq+rO9GGMJc8vmMF2OnQV+BXE46BSShIZDVbe0lIGwqf58Lrzkfv/nVoe8viTIgyQQEJYuDUe1gzFaTBJ+6e00idsiwZ/RxkENTsEZA=="
+      "tokenCipher": "v1.syahG8FunB4638bJsL+iVWqsPBX6PBvErAhqzCsqNjW0ydmA9K/d4dI9qVEKwC0EZMoKJqbWszpKo736/C9NyYXPesGn/Ze26u+pucIQq+Ywiryj3U3uiFfxyMVeUK+F0M7O9G+VO6NO9Y1OJ0qW4RaUsKxwrN61aA=="
     }
   }
 }
