@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-22T08:53:04.153Z",
+  "sentAt": "2026-07-22T08:56:07.544Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
-    "public": "https://shed-consulting-shaped-bidding.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
+    "public": "https://parliamentary-publisher-basically-potter.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
-      "tokenCipher": "v1.9w5gVC1vfHawnbWblUTy6XrWQZgdtxzI099OqLxCE+j4KebXPu66GnBe+B3B3Bu4Q+uDwdEbg5UuswvC5MRAnrJ2M7sulCY4XYmKHIbyzjA6wIHlzzlkS1KIskQGgfg2nQB0MjfYUeK2hElBAmO9S4BkuBDACKht7Q=="
+      "tokenCipher": "v1.mlCt0rF9NxWbapngaE9uanZKfwhIc/EytIu/l8XI/ilaUPMBA4oOuUVk2Qt/Vtnuq4wAxlw8Yj2JawpNKUm392mxohKYZDSLt+ZVEdk5gMlx0qskoYRtCbZB10zfsXZHC8oNN4fadrHLJolORCnmX10EtBoBnd/eZw=="
     }
   }
 }
