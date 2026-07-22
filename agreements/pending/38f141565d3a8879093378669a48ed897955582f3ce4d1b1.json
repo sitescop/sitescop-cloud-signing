@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-22T10:37:30.433Z",
+  "sentAt": "2026-07-22T12:32:01.163Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/38f141565d3a8879093378669a48ed897955582f3ce4d1b1",
-    "public": "https://jewelry-minds-paste-doe.trycloudflare.com/api/sign/38f141565d3a8879093378669a48ed897955582f3ce4d1b1",
+    "public": "https://boards-contracting-flip-exact.trycloudflare.com/api/sign/38f141565d3a8879093378669a48ed897955582f3ce4d1b1",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/38f141565d3a8879093378669a48ed897955582f3ce4d1b1.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/38f141565d3a8879093378669a48ed897955582f3ce4d1b1.json",
-      "tokenCipher": "v1.w/p6p13m+0zH9WwNcgcOeXGcifcnQVhdCG9oFppQSzr4jOrYneyw0nuFt9LEy/INEr0JzjeqUvmSI7iLYvrjH3mcdBPcRrftQZgKSAj70jvCbepmts6XiHKoKkddecE3JqxB2/T7jQAVdnVQ5fw2HoVcYJR6W8Y0Yw=="
+      "tokenCipher": "v1.S2qqQMffW7kBLlsn0rQswMGrjXEaxxY4GhvljbNRlPJGP3eQN73Kbovu1Gasq+rO9GGMJc8vmMF2OnQV+BXE46BSShIZDVbe0lIGwqf58Lrzkfv/nVoe8viTIgyQQEJYuDUe1gzFaTBJ+6e00idsiwZ/RxkENTsEZA=="
     }
   }
 }
