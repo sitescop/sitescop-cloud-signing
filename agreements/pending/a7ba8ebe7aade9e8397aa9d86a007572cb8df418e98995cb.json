@@ -5,7 +5,7 @@
   "publicView": {
     "id": "e0437b25-238e-405f-a76d-726615738ca6",
     "agreementNumber": "AGR-2026-0017",
-    "status": "SENT",
+    "status": "VIEWED",
     "inspectionType": "BUILDING",
     "companyName": "Sitescop PTY LTD",
     "companyPhone": "0401 427 366",
@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-22T05:25:24.280Z",
+  "sentAt": "2026-07-22T06:14:00.102Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/a7ba8ebe7aade9e8397aa9d86a007572cb8df418e98995cb",
-    "public": "https://cancel-bacterial-checkout-sullivan.trycloudflare.com/api/sign/a7ba8ebe7aade9e8397aa9d86a007572cb8df418e98995cb",
+    "public": "https://mating-constructed-gently-dot.trycloudflare.com/api/sign/a7ba8ebe7aade9e8397aa9d86a007572cb8df418e98995cb",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/a7ba8ebe7aade9e8397aa9d86a007572cb8df418e98995cb.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/a7ba8ebe7aade9e8397aa9d86a007572cb8df418e98995cb.json",
-      "tokenCipher": "v1.DAym6EYPV1jYxWKR2kEljiae/UrYEgSrcy/RaVbuuWoJOfwsV8CCx7WLm3vz5QKmfULaKIYK3SFztGFo7hHLYaEe3+p3p3Ob05hW/sz7TRrfipEYnmhHVKSLA3rmbWZ16Y7QM7Ln7CtaaWcTq0rrDtEVOoB9jgmACQ=="
+      "tokenCipher": "v1.zOl2eg9E1gipOyRJVSyDR4kqNU/vsiNcu2JOPNt+cBw8lkeKgE9qj6Btg1oeQYur0vNublp0KKvGcz25H8ORwVJgrJRyJyPTelgdVEsBqe/hNt64ttcw2F5jNYpJp3SG/RdTMC+0L4KlXNJ2BKnXtfNtXQjfYqjaxw=="
     }
   }
 }
