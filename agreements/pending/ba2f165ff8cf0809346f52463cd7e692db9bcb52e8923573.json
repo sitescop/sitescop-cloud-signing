@@ -73,17 +73,17 @@
       "contentHtml": "<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p>\n<div class=\"legal-callout legal-callout-warning\"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client's express authority to accept this agreement on their behalf.</p></div>\n<h3 class=\"legal-subhead\">1. Identity</h3>\n<p>I confirm I am <strong>toney</strong> of <strong>ray and white</strong> (the <strong>Agent</strong>).</p>\n<h3 class=\"legal-subhead\">2. Authority to act</h3>\n<p>I confirm I have the <strong>express authority</strong> of <strong>ramil baba</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at <strong>14 Tinonee pl hoxton park nsw 2171</strong>.</p>\n<h3 class=\"legal-subhead\">3. Client awareness</h3>\n<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions and Privacy Policy forming part of this agreement; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>\n<h3 class=\"legal-subhead\">4. Binding effect</h3>\n<p>I understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and <strong>binds the Client</strong> to this agreement as their authorised representative.</p>\n<h3 class=\"legal-subhead\">5. Agent responsibility</h3>\n<p>SiteScop Pty Ltd relies on this declaration. The Agent accepts responsibility for ensuring they are authorised to sign for the Client.</p>\n<div class=\"legal-callout legal-callout-note\"><p>The Client remains the party to whom the inspection is provided. This agreement does not permit third parties to rely on the Inspection Report without SiteScop's written consent.</p></div>"
     }
   },
-  "sentAt": "2026-07-22T10:37:38.719Z",
+  "sentAt": "2026-07-22T12:32:11.002Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/ba2f165ff8cf0809346f52463cd7e692db9bcb52e8923573",
-    "public": "https://jewelry-minds-paste-doe.trycloudflare.com/api/sign/ba2f165ff8cf0809346f52463cd7e692db9bcb52e8923573",
+    "public": "https://boards-contracting-flip-exact.trycloudflare.com/api/sign/ba2f165ff8cf0809346f52463cd7e692db9bcb52e8923573",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/ba2f165ff8cf0809346f52463cd7e692db9bcb52e8923573.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/ba2f165ff8cf0809346f52463cd7e692db9bcb52e8923573.json",
-      "tokenCipher": "v1.t3bPhwwHrvY2ldhpWoILmOKvAXLDF/JhIzvMMmFJA1WucozwnyDLPV06R8lQ9a0vgs9IU18BnIzKcMWwsWlcDknVqXOqPLLYfnyGXxd9liSE7rQhPcUIfBsGcARD+0P2wnXBdoP/CyW0sGu0hOu6BYkH4xJLDdtjqQ=="
+      "tokenCipher": "v1.eR91gUkKdsnrUUalSn6Zd/lcAWHYwTmy47wZoVcJ8oGvvmdfL3DQ7RAJkeDJJ+U50QCKfkvYBpcHy7C1fhflvFNQsWtSYveGSnyXoDId8PuXbsmBO8RX6ZL+hBoIUerMfpU7qMcnocNMY4K3MI+4Y3kMtm50di8LTg=="
     }
   }
 }
