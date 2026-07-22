@@ -73,17 +73,16 @@
       "contentHtml": "<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p>\n<div class=\"legal-callout legal-callout-warning\"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client's express authority to accept this agreement on their behalf.</p></div>\n<h3 class=\"legal-subhead\">1. Identity</h3>\n<p>I confirm I am <strong>tonton</strong> of <strong>lj hooker</strong> (the <strong>Agent</strong>).</p>\n<h3 class=\"legal-subhead\">2. Authority to act</h3>\n<p>I confirm I have the <strong>express authority</strong> of <strong>babak</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at <strong>10 streert st city 2324 nsw</strong>.</p>\n<h3 class=\"legal-subhead\">3. Client awareness</h3>\n<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions and Privacy Policy forming part of this agreement; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>\n<h3 class=\"legal-subhead\">4. Binding effect</h3>\n<p>I understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and <strong>binds the Client</strong> to this agreement as their authorised representative.</p>\n<h3 class=\"legal-subhead\">5. Agent responsibility</h3>\n<p>SiteScop Pty Ltd relies on this declaration. The Agent accepts responsibility for ensuring they are authorised to sign for the Client.</p>\n<div class=\"legal-callout legal-callout-note\"><p>The Client remains the party to whom the inspection is provided. This agreement does not permit third parties to rely on the Inspection Report without SiteScop's written consent.</p></div>"
     }
   },
-  "sentAt": "2026-07-22T06:43:35.163Z",
+  "sentAt": "2026-07-22T06:52:03.726Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/39a59aff474a5bde3498bec461fad3b6ebc03fd5b02105a5",
-    "public": "https://consolidated-intended-raising-cents.trycloudflare.com/api/sign/39a59aff474a5bde3498bec461fad3b6ebc03fd5b02105a5",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/39a59aff474a5bde3498bec461fad3b6ebc03fd5b02105a5.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/39a59aff474a5bde3498bec461fad3b6ebc03fd5b02105a5.json",
-      "tokenCipher": "v1.2hxyLgk+s96OFIX2kC+IqsWwpm72Dt4RiK1SbGbd1ukXtnlEUMemceBuAzNxel+erwe6brP3E17P0bbc9TxLm28o9kvH7lx12n/8g1TWKGEHVYoLLC2fwg6Td8RQxTML+L7qUGZ4YOWg3qPy0DfkHqxf0jFDYRi1aQ=="
+      "tokenCipher": "v1.nCkpY5JGHVONzJykx8jTPXvkkaBkf+HNZ3cic0Rs6bakgd6mBh7EEcWfRWIMui+BUiD7FH0KaU5DnsHEDB2mEwhEI3EECanovuTy3QJZFJS+1+m2qPt6AdPuJP9mJRCjzrG4Re8nZuWRP/P7j5/hC0kD2GH+t1ncNQ=="
     }
   }
 }
