@@ -446,6 +446,26 @@
     );
   }
 
+  function renderRevisedAgreementAvailable(meta) {
+    var url = String(meta.signingUrl || '').trim();
+    var number = String(meta.agreementNumber || '').trim();
+    setAppContent(
+      '<div class="wrap"><div class="card center">' +
+        '<h1>Updated agreement ready</h1>' +
+        '<p class="muted">The previous agreement was already signed. A new agreement' +
+        (number ? ' <strong>' + escapeHtml(number) + '</strong>' : '') +
+        ' needs your signature — terms, conditions, and sign box are on the updated link.</p>' +
+        (url
+          ? '<p style="margin-top:1.25rem"><a class="btn-primary" style="display:inline-block;text-decoration:none;padding:0.75rem 1.25rem;border-radius:8px" href="' +
+            escapeHtml(url) +
+            '">Review &amp; sign updated agreement</a></p>'
+          : '<p class="error">Ask your inspector to resend the new signing link.</p>') +
+        '</div>' +
+        renderPortalFooter(null) +
+        '</div>',
+    );
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, '&amp;')
@@ -1403,6 +1423,10 @@
       }
 
       if (pending.alreadySigned) {
+        if (pending.supersededBy && pending.supersededBy.signingUrl) {
+          renderRevisedAgreementAvailable(pending.supersededBy);
+          return;
+        }
         var signedAgreement = enrichAgreementForPortal(pending.publicView, pending);
         renderSuccess(signedAgreement.agreementNumber || pending.agreementNumber || '', signedAgreement);
         return;
