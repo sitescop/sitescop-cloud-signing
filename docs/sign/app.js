@@ -1418,7 +1418,9 @@
     try {
       const pending = await fetchPendingAgreement();
       if (!pending || !pending.publicView) {
-        renderError('This agreement link is invalid or has expired.');
+        renderError(
+          'This agreement link is invalid or has expired. Ask your inspector to open the agreement in SiteScop and use Revise agreement → Save & resend so you get a fresh signing link.',
+        );
         return;
       }
 
