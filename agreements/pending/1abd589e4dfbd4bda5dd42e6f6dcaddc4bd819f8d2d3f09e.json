@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-22T08:56:07.544Z",
+  "sentAt": "2026-07-22T09:16:49.471Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
-    "public": "https://parliamentary-publisher-basically-potter.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
+    "public": "https://born-fairy-berry-priest.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
-      "tokenCipher": "v1.mlCt0rF9NxWbapngaE9uanZKfwhIc/EytIu/l8XI/ilaUPMBA4oOuUVk2Qt/Vtnuq4wAxlw8Yj2JawpNKUm392mxohKYZDSLt+ZVEdk5gMlx0qskoYRtCbZB10zfsXZHC8oNN4fadrHLJolORCnmX10EtBoBnd/eZw=="
+      "tokenCipher": "v1.FWgieVDvoaKHqN4xoauCXh2Ur4EXrvbzaozYJY+eZo48wR1I3j2BT6F7JEwLl/4v1WsjNQ2BIdqDynpgRgUoHi21G7DlwyZlx7i8/eC4V0S5RejSUQlRZjhZi2TJao1ICIidTCdBXEvB/h8Vtgcu+6f2gtSdc8tUIw=="
     }
   }
 }
