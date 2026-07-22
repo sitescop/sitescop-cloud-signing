@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-22T07:54:33.051Z",
+  "sentAt": "2026-07-22T08:53:04.153Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
-    "public": "https://looking-techno-involvement-week.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
+    "public": "https://shed-consulting-shaped-bidding.trycloudflare.com/api/sign/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/1abd589e4dfbd4bda5dd42e6f6dcaddc4bd819f8d2d3f09e.json",
-      "tokenCipher": "v1.hFE2qrBoCJBClfNqoSEdSNFRxLSC/mOakUW2TWbW4IvZDseITSqhhT5n6bY7nRMr1omz1vU1Dwe+iEXHdoOIHPer7pO4NAlTFoxgClXLe8daLljnAKT9cab1DBARanIJcJitZKGhQ5SY87n+PMlCbeg0PmpV2VWMQA=="
+      "tokenCipher": "v1.9w5gVC1vfHawnbWblUTy6XrWQZgdtxzI099OqLxCE+j4KebXPu66GnBe+B3B3Bu4Q+uDwdEbg5UuswvC5MRAnrJ2M7sulCY4XYmKHIbyzjA6wIHlzzlkS1KIskQGgfg2nQB0MjfYUeK2hElBAmO9S4BkuBDACKht7Q=="
     }
   }
 }
