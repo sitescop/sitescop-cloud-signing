@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-23T10:03:07.062Z",
+  "sentAt": "2026-07-23T10:21:38.467Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1",
-    "public": "https://publications-diverse-sand-charity.trycloudflare.com/api/sign/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1",
+    "public": "https://arg-documentary-ads-drag.trycloudflare.com/api/sign/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1.json",
-      "tokenCipher": "v1.1nN4jl+Zzmeg5XFnQxAfJdj4PvW0lTYwKBJZadx8Q3YbLTqJAQyzpYsmCZF9PBK9x6zMqABGIHoAS5cw3J1LxOed0KIKb12dcgqhrFqg7pprdeZ1TTaC8+nHrWOR1GmgNVBoSjh+16Ufs84fpCVHuK3rPYITT9LZNg=="
+      "tokenCipher": "v1.hhWV8PV8JgrgY81yU2SawubRKJ5ZIfqBgrVJ9xL0pUV1/Wl5Vyu1+5m+Y7uGbA26qpH5UobJwlE64CqSju0WWwCCqBwwwMSmoncoo+09uEnl3jQx2N28EWdp7bp1u87F+WjROW7ydiZ+ynEWyLLzdx4nqigR9GZF5g=="
     }
   }
 }
