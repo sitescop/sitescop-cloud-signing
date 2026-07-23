@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-23T07:21:58.929Z",
+  "sentAt": "2026-07-23T08:38:01.849Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
-    "public": "https://restaurants-cases-airlines-intl.trycloudflare.com/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
+    "public": "https://bride-pci-housing-bug.trycloudflare.com/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/5bad31c911de4ef3139ab87701d5017ead78d095308c2064.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/5bad31c911de4ef3139ab87701d5017ead78d095308c2064.json",
-      "tokenCipher": "v1.C6ItNbLNmkvh3FsBHAfsnFJOStIx+d7/02tkVe1UTTagFvUQDKhumR2iqpp27ZE2gRsJi8LJrCt745let2KWbT5HoOTeQ8yaDwdmPNhknF5GH/l8AdxuA4vaI8ycgAW6l52OqEo1Snk86IGVeIRmCswArJXkpqCTRg=="
+      "tokenCipher": "v1.K8OspkFeIoDPqwW8Bm5f7hxY9VyDS8hhDFSIxSPaIHICdrvU5mpc0zJDKwlbOhNDTgaj6A8RDlwjRh9d5L8h4ZgR8KbEGZrpjTZqS9pnIPstqu9Al2GrIRAkuuqD65zimPfb2VVpCCIkwtIDjCb79c3bKerMN5AmCQ=="
     }
   }
 }
