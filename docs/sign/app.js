@@ -511,6 +511,12 @@
     return prepared;
   }
 
+  function lockedSigningPartyFromPending(agreement, pending) {
+    var preferred = String((pending && pending.signingEmailRecipient) || '').toUpperCase();
+    if (preferred === 'AGENT' && agentSigningAvailable(agreement)) return 'AGENT';
+    return 'CLIENT';
+  }
+
   function buildAgentAuthoritySection(ctx) {
     var agency = ctx.agencyName && String(ctx.agencyName).trim() ? ctx.agencyName : 'the listed real estate agency';
     var contentHtml =
@@ -1186,19 +1192,8 @@
       void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
       var baseAgreement = enrichAgreementForPortal(pending.publicView, pending);
-      if (baseAgreement.canSign && agentSigningAvailable(baseAgreement)) {
-        var party = new URLSearchParams(location.search).get('party');
-        if (party === 'CLIENT' || party === 'AGENT') {
-          renderAgreement(prepareAgreementForSigningParty(baseAgreement, party), pending);
-          return;
-        }
-        renderSigningPartySelector(baseAgreement, function (chosenParty) {
-          renderAgreement(prepareAgreementForSigningParty(baseAgreement, chosenParty), pending);
-        });
-        return;
-      }
-
-      renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'CLIENT'), pending);
+      var lockedParty = lockedSigningPartyFromPending(baseAgreement, pending);
+      renderAgreement(prepareAgreementForSigningParty(baseAgreement, lockedParty), pending);
     } catch (e) {
       renderError(e.message || 'Could not load agreement.');
     }
