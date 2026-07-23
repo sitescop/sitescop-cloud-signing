@@ -17,7 +17,7 @@
     "agencyName": "Raywhite",
     "agentName": "Toney",
     "agentEmail": "afshinsobbi@gmail.com",
-    "signingEmailRecipient": null,
+    "signingEmailRecipient": "CLIENT",
     "clientName": "ruby",
     "clientEmail": "t.ltechno@yahoo.com",
     "propertyAddress": "44  Devlin st Ashcroft NSW 2168",
@@ -69,17 +69,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-23T11:56:37.544Z",
+  "sentAt": "2026-07-23T12:15:50.528Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/b65ba8d8cab4097ae229987f606100dc2e336fe421793a88",
-    "public": "https://vessels-forecasts-postposted-limitations.trycloudflare.com/api/sign/b65ba8d8cab4097ae229987f606100dc2e336fe421793a88",
+    "public": "https://tri-reproduce-activation-asks.trycloudflare.com/api/sign/b65ba8d8cab4097ae229987f606100dc2e336fe421793a88",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/b65ba8d8cab4097ae229987f606100dc2e336fe421793a88.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/b65ba8d8cab4097ae229987f606100dc2e336fe421793a88.json",
-      "tokenCipher": "v1.rByq1hr0WBhNruNfoFdwoqSkd3Xc77zOqTbfmYT7TObXdCpoRqTWDWVIZI+omLNdCZQxyaGJl8STcMnMxvTMNZLXin9OvgRL9F3aXM7Hqj5WMGd5qxICneqqAYem4egQfqlWdR8fogo+8Vdj9ZtwHihBIOM66l8aQw=="
+      "tokenCipher": "v1.ye3RYNbQSpPMr9XmNk05wbDcwVZ73FmYC//Ge3YQUCJ6oFlqJP817B1DUEv4J6X2cUqJVtieZrd1LMJG3VQv0QrdOobcGl2ehG5ZZFwiFlQfam2alErM3RyZ9C8/xJYIRuywfmVHlwT7UxTcl88y14QypJSH4dkxhw=="
     }
   }
 }
