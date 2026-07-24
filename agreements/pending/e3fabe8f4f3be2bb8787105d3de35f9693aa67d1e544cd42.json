@@ -17,7 +17,6 @@
     "agencyName": "Harbour Realty Group",
     "agentName": "Alex Agent",
     "agentEmail": "info@sitescop.com.au",
-    "signingEmailRecipient": null,
     "clientName": "Testing Ash (COMBINED)",
     "clientEmail": "testingash6@gmail.com",
     "propertyAddress": "15 3 Oak Avenue, Glen Waverley VIC 3150",
@@ -66,20 +65,25 @@
       ]
     },
     "canSign": true,
-    "agentSigningAvailable": false,
-    "agentAuthoritySection": null
+    "agentSigningAvailable": true,
+    "agentAuthoritySection": {
+      "id": "agent-authority",
+      "title": "Agent Authority Declaration",
+      "content": "Agent Authority Declaration\n\nThis declaration applies because a real estate agent is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.\n\n1. Identity\nI confirm I am Alex Agent of Harbour Realty Group (the Agent).\n\n2. Authority to act\nI confirm I have the express authority of Testing Ash (COMBINED) (the Client) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at 15 3 Oak Avenue, Glen Waverley VIC 3150.\n\n3. Client awareness\nI confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms & Conditions and Privacy Policy forming part of this agreement; and that the Inspection Report is prepared for the Client only.\n\n4. Binding effect\nI understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and binds the Client to this agreement as their authorised representative.\n\n5. Agent responsibility\nSiteScop Pty Ltd relies on this declaration. The Agent accepts responsibility for ensuring they are authorised to sign for the Client. The Agent must not sign unless they hold that authority.\n\nIMPORTANT: Only sign if you are the Agent named above and you have the Client's authority to accept this agreement on their behalf.",
+      "contentHtml": "<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p>\n<div class=\"legal-callout legal-callout-warning\"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client's express authority to accept this agreement on their behalf.</p></div>\n<h3 class=\"legal-subhead\">1. Identity</h3>\n<p>I confirm I am <strong>Alex Agent</strong> of <strong>Harbour Realty Group</strong> (the <strong>Agent</strong>).</p>\n<h3 class=\"legal-subhead\">2. Authority to act</h3>\n<p>I confirm I have the <strong>express authority</strong> of <strong>Testing Ash (COMBINED)</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at <strong>15 3 Oak Avenue, Glen Waverley VIC 3150</strong>.</p>\n<h3 class=\"legal-subhead\">3. Client awareness</h3>\n<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions and Privacy Policy forming part of this agreement; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>\n<h3 class=\"legal-subhead\">4. Binding effect</h3>\n<p>I understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and <strong>binds the Client</strong> to this agreement as their authorised representative.</p>\n<h3 class=\"legal-subhead\">5. Agent responsibility</h3>\n<p>SiteScop Pty Ltd relies on this declaration. The Agent accepts responsibility for ensuring they are authorised to sign for the Client.</p>\n<div class=\"legal-callout legal-callout-note\"><p>The Client remains the party to whom the inspection is provided. This agreement does not permit third parties to rely on the Inspection Report without SiteScop's written consent.</p></div>"
+    }
   },
-  "sentAt": "2026-07-24T02:09:20.307Z",
+  "sentAt": "2026-07-24T02:53:15.794Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
-    "public": "https://accomplish-resumes-explicitly-eyed.trycloudflare.com/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
+    "public": "https://stranger-rogers-preparation-pmid.trycloudflare.com/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42.json",
-      "tokenCipher": "v1.C4anBSAL35JGqxoooU0hJUss3FafmgO1eotBlmEMgxNgPZEzqjwTZlnmIarv00P7eGAcvjUVA6YGcSQZACpPijiwDiCzaKUpGHPdAu7Boq1XwAJ6h9bqXY/g2CmW776VvRs1j6a7pG6dbNryWjvTvSRxI5OAaBEpkg=="
+      "tokenCipher": "v1.d89eeweegIDETJ+U3HGnCJLQNcoZVZZ2xY0wlNhVr/xVDUp0TRYDNjBVkFbt0j6mX9ZLwd70bKB7P8rUcwD1pN7aHeXa+lIQ6LrD5FfKcs1Xfe3W5arROQzYnG1Yvyp8eup+e3mV6VG2jJyPIHzbhDdrD+5gaclxOA=="
     }
   }
 }
