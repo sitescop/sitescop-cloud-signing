@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-24T02:23:02.603Z",
+  "sentAt": "2026-07-24T02:52:57.304Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782",
-    "public": "https://allows-great-place-newcastle.trycloudflare.com/api/sign/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782",
+    "public": "https://stranger-rogers-preparation-pmid.trycloudflare.com/api/sign/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782.json",
-      "tokenCipher": "v1.y3E3zlyKoqAcyjCyD0YXsf73oLmzBAuXpLMwnsMoJLCVrF2d+ppBTzvzmVPM8GET+8yzQAlHX5nzKPYdVhjlO1w0BfHCjEfsRQWixaVh218cfeCti4bBytDbSVF1bTeZMZI6RrftCTo5Ov3pGy0yE3lc8YxQ2IjsHw=="
+      "tokenCipher": "v1.Ds0sE3Q5dGuSkjQPozZP52R54r7Mg1dnmtckxaHQfpUcjAbgZWt0gWWhlKgIMeDq4oozBYlNyvODi8skv2vchiqe4adcjQl1x75t/r2Nep7IAotJr3duWB/LNUIck9R4+j4K1gR2+gMDyz5sVi6FHrFexNV4u2l41w=="
     }
   }
 }
