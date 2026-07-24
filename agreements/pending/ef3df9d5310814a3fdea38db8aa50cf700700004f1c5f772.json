@@ -17,7 +17,6 @@
     "agencyName": null,
     "agentName": null,
     "agentEmail": null,
-    "signingEmailRecipient": null,
     "clientName": "afshin",
     "clientEmail": "afshinsobbi@gmail.com",
     "propertyAddress": "14 Tinonee pl hoxton park nsw 2171",
@@ -69,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-24T02:09:47.547Z",
+  "sentAt": "2026-07-24T02:53:40.998Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/ef3df9d5310814a3fdea38db8aa50cf700700004f1c5f772",
-    "public": "https://accomplish-resumes-explicitly-eyed.trycloudflare.com/api/sign/ef3df9d5310814a3fdea38db8aa50cf700700004f1c5f772",
+    "public": "https://stranger-rogers-preparation-pmid.trycloudflare.com/api/sign/ef3df9d5310814a3fdea38db8aa50cf700700004f1c5f772",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/ef3df9d5310814a3fdea38db8aa50cf700700004f1c5f772.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/ef3df9d5310814a3fdea38db8aa50cf700700004f1c5f772.json",
-      "tokenCipher": "v1.EveuFWrQuftMpN8UP4m9kRCR2RH2rvHeyPocE7i3eBOZEwCDKb3OSuCUvtMpL7KqBhyVH7EcfQ3o88jjbXikTsovfDWBGGlG8ezBXGqjl2D4cdPHGWNc43VTL0dyGNIEaTSn1xFzPVjOZK3em0pUyzoi94VHfwdu1A=="
+      "tokenCipher": "v1.R+ZNrwQBOm8R3JQyRBcSOW6hhyWVnCc0rNrFJZxMZ99RNhITjnN+928R4Oyd9VpdudSI+pMo/Kwo9zilYZVgKgHGDwbk+3th83vVqgQFkiSIIJU2LEYf5nskmZHRgEI8GExZDa+/ADZJcrWZq7KqOsLdIrnjogEtQg=="
     }
   }
 }
