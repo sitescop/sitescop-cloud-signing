@@ -17,7 +17,6 @@
     "agencyName": null,
     "agentName": null,
     "agentEmail": null,
-    "signingEmailRecipient": null,
     "clientName": "Afshin Sobbi (BUILDING)",
     "clientEmail": "afshinsobbi@gmail.com",
     "propertyAddress": "1 14 Harbour View Rd, Manly NSW 2095",
@@ -69,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-24T02:09:04.465Z",
+  "sentAt": "2026-07-24T02:23:02.603Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782",
-    "public": "https://accomplish-resumes-explicitly-eyed.trycloudflare.com/api/sign/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782",
+    "public": "https://allows-great-place-newcastle.trycloudflare.com/api/sign/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/e8d0e30761ad1d0313361aedfe00b54d9f9d9c87d19c7782.json",
-      "tokenCipher": "v1.OfELbgKUidiAIx4wMOMH5kiLYnfl/cIQ3OU+kMOSzMx+dnSaeUs+b3CS1WHUAZ6zrQPTnMD/4SgwAZn2oQcxOZVsxBP46TWz0fCVF2mqP8snxmo8fb87dL7E5EgCT9bH4iGbkR2xVZQ3sjj6GQBA6DWAiJBYxv4VRQ=="
+      "tokenCipher": "v1.y3E3zlyKoqAcyjCyD0YXsf73oLmzBAuXpLMwnsMoJLCVrF2d+ppBTzvzmVPM8GET+8yzQAlHX5nzKPYdVhjlO1w0BfHCjEfsRQWixaVh218cfeCti4bBytDbSVF1bTeZMZI6RrftCTo5Ov3pGy0yE3lc8YxQ2IjsHw=="
     }
   }
 }
