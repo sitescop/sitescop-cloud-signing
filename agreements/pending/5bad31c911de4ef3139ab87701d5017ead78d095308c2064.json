@@ -17,6 +17,7 @@
     "agencyName": null,
     "agentName": null,
     "agentEmail": null,
+    "signingEmailRecipient": null,
     "clientName": "SiteScop Gmail (COMBINED)",
     "clientEmail": "sitescop@gmail.com",
     "propertyAddress": "18 45 Trial Rd, Newcastle NSW 2300",
@@ -68,17 +69,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-24T02:05:03.058Z",
+  "sentAt": "2026-07-24T02:09:37.009Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
-    "public": "https://organize-pounds-proceeding-emphasis.trycloudflare.com/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
+    "public": "https://accomplish-resumes-explicitly-eyed.trycloudflare.com/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/5bad31c911de4ef3139ab87701d5017ead78d095308c2064.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/5bad31c911de4ef3139ab87701d5017ead78d095308c2064.json",
-      "tokenCipher": "v1.fVKJckttnoq2p+ZbIcedUr5Xkn+LQoQj9npz6BAwY0DihJEWeVWBeTy+Ly8Q154VsVGpp6cW7b/Yu3MwIvMnqNEtgZSpRJ5ndKYDq4YBz0XXAR329q1gsYo/2EqiwCc2HKPEfwU1n64IOajZKx9viNudnT/16jD39A=="
+      "tokenCipher": "v1.EfS+p+75FmQfCH/qF7Ea58gWaxMTqFWyTE1v2lOkGBu3hMyD8diFgnUA+75df0zTFi26Ty7RZ/yCax809Av1NL5Uqx32Q6qvSeJX/oJluk2xq21XAh18PK2LQ9fID/1sWiLyR4joid3MgfcCUr/4W4sCVGQdhr93ew=="
     }
   }
 }
