@@ -1,10 +1,11 @@
 /* SiteScop V6 — Cloudflare Cloud Signing (Pages client portal)
- * Uses Cloudflare Worker APIs for pending / viewed / sign.
- * No GitHub fallback is used in Cloudflare-only deployments. */
+ * Prefers Cloudflare Worker APIs for pending / viewed / sign.
+ * Optional legacy GitHub fallback when apiBaseUrl is not set. */
 (function () {
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
+  const PORTAL_BUILD = 21;
   const token = new URLSearchParams(location.search).get('token') || '';
 
   function cfg() {
@@ -20,6 +21,24 @@
     return String(c.apiBaseUrl || '')
       .trim()
       .replace(/\/$/, '');
+  }
+
+  function rawGitHubUrl(path) {
+    const c = cfg();
+    const branch = c.branch || 'main';
+    if (!c.owner || !c.repo) {
+      throw new Error('GitHub fallback is not configured (set apiBaseUrl for Cloudflare signing).');
+    }
+    return (
+      'https://raw.githubusercontent.com/' +
+      encodeURIComponent(c.owner) +
+      '/' +
+      encodeURIComponent(c.repo) +
+      '/' +
+      encodeURIComponent(branch) +
+      '/' +
+      path
+    );
   }
 
   function formatAud(cents) {
@@ -104,41 +123,177 @@
 
   async function fetchPendingAgreement() {
     const api = apiBaseUrl();
+    if (api) {
+      let res;
+      try {
+        res = await fetch(api + '/v1/pending/' + encodeURIComponent(token));
+      } catch {
+        throw new Error('Network error — could not reach the Cloudflare signing service.');
+      }
+      if (res.status === 404) return null;
+      if (!res.ok) {
+        throw new Error('Could not load agreement from Cloudflare (' + res.status + ').');
+      }
+      return res.json();
+    }
+
     let res;
     try {
-      res = await fetch(api + '/v1/pending/' + encodeURIComponent(token));
+      res = await fetch(rawGitHubUrl('agreements/pending/' + token + '.json'));
     } catch {
-      throw new Error('Network error — could not reach the Cloudflare signing service.');
+      throw new Error('Network error — could not reach GitHub.');
     }
     if (res.status === 404) return null;
-    if (!res.ok) {
-      throw new Error('Could not load agreement from Cloudflare (' + res.status + ').');
-    }
+    if (!res.ok) throw new Error('Could not load agreement from GitHub (' + res.status + ').');
     return res.json();
   }
 
-  function resolveSignEndpoint() {
+  function submitEndpoints(pending) {
+    const endpoints = [];
+    const relay = pending && pending.submitEndpoints;
     const api = apiBaseUrl();
-    if (!api) {
-      throw new Error('Missing Cloudflare signing API URL — set apiBaseUrl in config.js.');
+    // Prefer Cloudflare Worker first — works while the inspector PC is offline.
+    if (relay && relay.api) {
+      endpoints.push({ type: 'http', url: relay.api });
+    } else if (api) {
+      endpoints.push({ type: 'http', url: api + '/v1/sign/' + encodeURIComponent(token) });
     }
-    return api + '/v1/sign/' + encodeURIComponent(token);
+    // Legacy GitHub hosted submit.
+    if (
+      relay &&
+      relay.github &&
+      relay.github.signedContentsUrl &&
+      (relay.github.tokenCipher || relay.github.token)
+    ) {
+      endpoints.push({ type: 'github', github: relay.github });
+    }
+    if (relay && relay.public) endpoints.push({ type: 'http', url: relay.public });
+    if (relay && relay.lan) endpoints.push({ type: 'http', url: relay.lan });
+    return endpoints;
   }
 
-  function resolveViewedEndpoint() {
-    const api = apiBaseUrl();
-    if (!api) {
-      throw new Error('Missing Cloudflare signing API URL — set apiBaseUrl in config.js.');
+  function bytesToBase64(bytes) {
+    let binary = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
     }
-    return api + '/v1/viewed/' + encodeURIComponent(token);
+    return btoa(binary);
   }
 
-  async function relayRequest(url, options) {
+  function utf8ToBase64(text) {
+    return bytesToBase64(new TextEncoder().encode(text));
+  }
+
+  function base64ToBytes(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  /** Decrypt tokenCipher sealed by SiteScop (AES-GCM, key = SHA-256 of access token). */
+  async function resolveGithubWriteToken(gh) {
+    if (gh.tokenCipher && String(gh.tokenCipher).indexOf('v1.') === 0) {
+      try {
+        const packed = base64ToBytes(String(gh.tokenCipher).slice(3));
+        const iv = packed.slice(0, 12);
+        const tag = packed.slice(12, 28);
+        const data = packed.slice(28);
+        const keyMaterial = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode('sitescop-sign-v1:' + token),
+        );
+        const key = await crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['decrypt']);
+        const combined = new Uint8Array(data.length + tag.length);
+        combined.set(data);
+        combined.set(tag, data.length);
+        const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, combined);
+        return new TextDecoder().decode(plain);
+      } catch (_) {
+        throw new Error(
+          'Could not unlock the secure signing key. Ask your inspector to Update cloud page / Resend this agreement.',
+        );
+      }
+    }
+    if (gh.token) return gh.token;
+    throw new Error(
+      'This signing link is missing a secure GitHub submit key. Ask your inspector to Update cloud page.',
+    );
+  }
+
+  async function githubPutJson(contentsUrl, branch, token, message, payload) {
+    let sha = null;
+    try {
+      const existing = await fetch(contentsUrl, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+      if (existing.ok) {
+        const meta = await existing.json();
+        sha = meta && meta.sha ? meta.sha : null;
+      } else if (existing.status === 401 || existing.status === 403) {
+        throw new Error(
+          'GitHub refused the signing token (' +
+            existing.status +
+            '). Ask your inspector to check the GitHub PAT in SiteScop Settings.',
+        );
+      }
+    } catch (e) {
+      if (e && e.message && /GitHub refused|PAT/i.test(e.message)) throw e;
+      // continue — file may not exist yet
+    }
+
+    const body = {
+      message: message,
+      content: utf8ToBase64(JSON.stringify(payload)),
+      branch: branch || 'main',
+    };
+    if (sha) body.sha = sha;
+
+    let res;
+    try {
+      res = await fetch(contentsUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/vnd.github+json',
+          'Content-Type': 'application/json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (_) {
+      throw new Error(
+        'Network error — could not save signature to GitHub. Check internet connection and try again.',
+      );
+    }
+
+    if (!res.ok) {
+      let detail = 'GitHub submit failed (' + res.status + ').';
+      try {
+        const errBody = await res.json();
+        if (errBody && errBody.message) detail = errBody.message;
+      } catch (_) {}
+      if (res.status === 401 || res.status === 403) {
+        detail =
+          'GitHub token cannot write signatures. Ask your inspector to update GitHub Settings / Resend the agreement.';
+      }
+      throw new Error(detail);
+    }
+    return true;
+  }
+
+  async function relayRequest(baseUrl, suffix, options) {
+    const url = baseUrl.replace(/\/$/, '') + suffix;
     let res;
     try {
       res = await fetch(url, options);
     } catch {
-      throw new Error('Network error — could not reach the Cloudflare signing service.');
+      throw new Error('Network error — could not reach the SiteScop signing relay.');
     }
     if (res.status === 204) return null;
     let body = null;
@@ -148,20 +303,116 @@
       body = null;
     }
     if (!res.ok) {
-      const message = (body && body.error) || 'Signing request failed (' + res.status + ').';
+      const message = (body && body.error) || 'Signing relay request failed (' + res.status + ').';
       throw new Error(message);
     }
     return body;
   }
 
   async function relayWithFallback(pending, suffix, options) {
-    if (suffix === '/viewed') {
-      return relayRequest(resolveViewedEndpoint(), options);
+    const endpoints = submitEndpoints(pending);
+    const hasCloudApi = Boolean(
+      apiBaseUrl() || (pending && pending.submitEndpoints && pending.submitEndpoints.api),
+    );
+    const hasGithub = endpoints.some(function (e) {
+      return e.type === 'github';
+    });
+    const isViewed = suffix === '/viewed';
+
+    // Cloudflare viewed endpoint (works while PC is offline).
+    if (isViewed && apiBaseUrl()) {
+      try {
+        await relayRequest(apiBaseUrl() + '/v1/viewed/' + encodeURIComponent(token), '', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}',
+        });
+        return null;
+      } catch (e) {
+        if (!endpoints.length && !hasGithub) throw e;
+      }
     }
-    if (suffix === '') {
-      return relayRequest(resolveSignEndpoint(pending), options);
+
+    if (!hasCloudApi && !hasGithub && !isViewed) {
+      throw new Error(
+        'This signing link has no Cloudflare submit path. Ask your inspector to open SiteScop → Resend, then open this link again.',
+      );
     }
-    throw new Error('Invalid signing relay path.');
+
+    if (!endpoints.length) {
+      if (isViewed) return null;
+      throw new Error(
+        'This agreement has no secure signing path. Ask your inspector to re-send the link from SiteScop.',
+      );
+    }
+
+    let lastError = null;
+    let githubError = null;
+
+    for (let i = 0; i < endpoints.length; i += 1) {
+      const endpoint = endpoints[i];
+      try {
+        if (endpoint.type === 'github') {
+          const gh = endpoint.github;
+          const writeToken = await resolveGithubWriteToken(gh);
+          if (isViewed) {
+            await githubPutJson(
+              gh.viewedContentsUrl,
+              gh.branch,
+              writeToken,
+              'SiteScop Cloud Signing: agreement viewed',
+              { token: token, viewedAt: new Date().toISOString() },
+            );
+            return null;
+          }
+          const payload = JSON.parse(options.body || '{}');
+          await githubPutJson(
+            gh.signedContentsUrl,
+            gh.branch,
+            writeToken,
+            'SiteScop Cloud Signing: client signed (hosted submit)',
+            {
+              token: token,
+              signatureName: payload.signatureName,
+              signatureData: payload.signatureData,
+              declarationsAccepted: payload.declarationsAccepted,
+              signingParty: payload.signingParty,
+              agentAuthorityAccepted: payload.agentAuthorityAccepted,
+              signedAt: new Date().toISOString(),
+              portalBuild: PORTAL_BUILD,
+            },
+          );
+          return null;
+        }
+
+        if (isViewed) {
+          // Prefer Cloudflare viewed above; skip legacy relay for viewed when cloud is primary.
+          if (hasCloudApi) continue;
+          return await relayRequest(endpoint.url, suffix, options);
+        }
+
+        // Cloudflare / Worker sign URL is absolute — do not append /viewed-style suffixes.
+        if (String(endpoint.url).indexOf('/v1/sign/') !== -1) {
+          return await relayRequest(endpoint.url, '', options);
+        }
+
+        // When hosted GitHub submit is configured, do not fall back to LAN/public relay.
+        if (hasGithub && !hasCloudApi) {
+          continue;
+        }
+
+        return await relayRequest(endpoint.url, suffix, options);
+      } catch (e) {
+        lastError = e;
+        if (endpoint.type === 'github') githubError = e;
+        if (i === endpoints.length - 1) {
+          if (githubError) throw githubError;
+          throw e;
+        }
+      }
+    }
+    if (isViewed) return null;
+    throw githubError || lastError || new Error('Could not submit the signature.');
   }
 
   function setAppContent(html) {
@@ -509,12 +760,6 @@
       },
     });
     return prepared;
-  }
-
-  function lockedSigningPartyFromPending(agreement, pending) {
-    var preferred = String((pending && pending.signingEmailRecipient) || '').toUpperCase();
-    if (preferred === 'AGENT' && agentSigningAvailable(agreement)) return 'AGENT';
-    return 'CLIENT';
   }
 
   function buildAgentAuthoritySection(ctx) {
@@ -1192,8 +1437,14 @@
       void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
       var baseAgreement = enrichAgreementForPortal(pending.publicView, pending);
-      var lockedParty = lockedSigningPartyFromPending(baseAgreement, pending);
-      renderAgreement(prepareAgreementForSigningParty(baseAgreement, lockedParty), pending);
+      if (baseAgreement.canSign && agentSigningAvailable(baseAgreement)) {
+        renderSigningPartySelector(baseAgreement, function (party) {
+          renderAgreement(prepareAgreementForSigningParty(baseAgreement, party), pending);
+        });
+        return;
+      }
+
+      renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'CLIENT'), pending);
     } catch (e) {
       renderError(e.message || 'Could not load agreement.');
     }
