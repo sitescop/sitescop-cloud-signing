@@ -73,17 +73,17 @@
       "contentHtml": "<p>This declaration applies because a <strong>real estate agent</strong> is signing this Inspection Agreement on behalf of the purchaser/client named in this agreement.</p>\n<div class=\"legal-callout legal-callout-warning\"><p><strong>Important:</strong> Only sign if you are the Agent named below and you have the Client's express authority to accept this agreement on their behalf.</p></div>\n<h3 class=\"legal-subhead\">1. Identity</h3>\n<p>I confirm I am <strong>Alex Agent</strong> of <strong>Harbour Realty Group</strong> (the <strong>Agent</strong>).</p>\n<h3 class=\"legal-subhead\">2. Authority to act</h3>\n<p>I confirm I have the <strong>express authority</strong> of <strong>Testing Ash (COMBINED)</strong> (the <strong>Client</strong>) to accept this SiteScop Inspection Agreement on the Client's behalf for the property at <strong>15 3 Oak Avenue, Glen Waverley VIC 3150</strong>.</p>\n<h3 class=\"legal-subhead\">3. Client awareness</h3>\n<p>I confirm I have explained to the Client (or will promptly provide the Client with) the Scope of Inspection, Inspection Limitations, Terms &amp; Conditions and Privacy Policy forming part of this agreement; and that the <strong>Inspection Report is prepared for the Client only</strong>.</p>\n<h3 class=\"legal-subhead\">4. Binding effect</h3>\n<p>I understand my electronic signature has the same legal effect as a handwritten signature to the extent permitted by Australian law, and <strong>binds the Client</strong> to this agreement as their authorised representative.</p>\n<h3 class=\"legal-subhead\">5. Agent responsibility</h3>\n<p>SiteScop Pty Ltd relies on this declaration. The Agent accepts responsibility for ensuring they are authorised to sign for the Client.</p>\n<div class=\"legal-callout legal-callout-note\"><p>The Client remains the party to whom the inspection is provided. This agreement does not permit third parties to rely on the Inspection Report without SiteScop's written consent.</p></div>"
     }
   },
-  "sentAt": "2026-07-25T07:31:16.897Z",
+  "sentAt": "2026-07-25T12:28:10.891Z",
   "submitEndpoints": {
-    "lan": "http://10.80.87.246:38765/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
-    "public": "https://belong-rocks-refine-attachments.trycloudflare.com/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
+    "lan": "http://192.168.1.103:38765/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
+    "public": "https://amino-browse-kijiji-picnic.trycloudflare.com/api/sign/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/e3fabe8f4f3be2bb8787105d3de35f9693aa67d1e544cd42.json",
-      "tokenCipher": "v1.X0AXmO7L3IuW6cW6Y3Y6v4NeSV+xeYaG5rzry+9tYfHv1cCk7OxO9dzrsfVDj/h4sUGJdWbnkssW4zpnC/nJwPNYoE1P1YLMD8qi2bGpTzUfWv5j6LIyehcPgbiP94FCVM0koo57CHNCtwcDYXYCBl4yjb8A4VQ3Dw=="
+      "tokenCipher": "v1.82sDm+qlVaVgKozVJnynQcCYATZ5CzuSY4vbjkjXaSfw5MTqwUeTOh0LSyB3xDHVcTPJemJzhP8lhiRt/JLQ8m6aQj6mO6zfHuOsKw703JY6RSR2haHdb4j1EWOIzlH+RsOgnkj9DQP3lCTXyaog5o84t69K/jNHjg=="
     }
   }
 }
