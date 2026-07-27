@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-07-25T12:28:21.245Z",
+  "sentAt": "2026-07-27T08:31:49.001Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1",
-    "public": "https://amino-browse-kijiji-picnic.trycloudflare.com/api/sign/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1",
+    "public": "https://taxi-stations-wallace-latin.trycloudflare.com/api/sign/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/88b2f45e4f0eccab1d52c3c1008df8872bdd3eafed5474a1.json",
-      "tokenCipher": "v1.g8mnQUBTqkuSRturU2TFripvP4gbJ1fFvUVHSUzjINvw9rXQdBvriV4GuFYcZ3OS6MHoJxLZx+TXQNIsJfgMj61bULXon1M8C60rDxUqj1qqsRwju2+NS6XVMKjmW13HQ9IEwyfPkcHv24dmpCGylqpaid+Ys6ImDQ=="
+      "tokenCipher": "v1.bJnrm19xVLf5cVEBZspBSryR9pxeirskpCVlNLdle9RcfcLmAIHLNkYmewNgmIIHVcNyKG/MZ9P7BLISdZGXMKQK6a+bKtSC3J6JR6cMm7aOruM43hcgTVcM7SqwJYOWT5hWVoWigoL148xeUQsM7tSrWMbcJ4DnQA=="
     }
   }
 }
