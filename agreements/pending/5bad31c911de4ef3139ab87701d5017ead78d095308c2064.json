@@ -68,17 +68,17 @@
     "agentSigningAvailable": false,
     "agentAuthoritySection": null
   },
-  "sentAt": "2026-08-02T23:25:35.882Z",
+  "sentAt": "2026-08-03T00:08:56.120Z",
   "submitEndpoints": {
     "lan": "http://192.168.1.103:38765/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
-    "public": "https://overseas-earning-determination-editor.trycloudflare.com/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
+    "public": "https://kits-societies-convention-standings.trycloudflare.com/api/sign/5bad31c911de4ef3139ab87701d5017ead78d095308c2064",
     "github": {
       "owner": "sitescop",
       "repo": "sitescop-cloud-signing",
       "branch": "main",
       "signedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/signed/5bad31c911de4ef3139ab87701d5017ead78d095308c2064.json",
       "viewedContentsUrl": "https://api.github.com/repos/sitescop/sitescop-cloud-signing/contents/agreements/viewed/5bad31c911de4ef3139ab87701d5017ead78d095308c2064.json",
-      "tokenCipher": "v1.znH4mDy27GDSjxBStYc3jTwDjWiDdAADrUAsxBx1qBB0WS06uGI2s1a0la3Ug/f0esa497mGXK4F4qpPpkKTJvQ1WvDUW4Pd6ub6SKpWPTruPe6dN1pwUl0BTyoyDLWqm00srzaQPmGbD/WMHap7JruD+7WA7vS6Ig=="
+      "tokenCipher": "v1.77l1oP9/S7oTpe0yjGUuIyqJ3Htl7sAJdla3IC/BXZK7Rqfy9S2gATFob2W4lfVZqKwXACtDL/JzdrUvySxAGB2vUv8C/wkw6WJKcXHC++wWtUnty9dkxSqUHZxbcU+MDy8wcOeV2BL9krIS6ZoM5+OhYIsXhD3DUA=="
     }
   }
 }
