@@ -5,8 +5,11 @@
   'use strict';
 
   const TYPE_LABELS = { BUILDING: 'Building', PEST: 'Pest', COMBINED: 'Building & Pest' };
-  const PORTAL_BUILD = 21;
-  const token = new URLSearchParams(location.search).get('token') || '';
+  const PORTAL_BUILD = 22;
+  const urlParams = new URLSearchParams(location.search);
+  const token = urlParams.get('token') || '';
+  const partyLockRaw = String(urlParams.get('party') || '').toUpperCase();
+  const partyLock = partyLockRaw === 'AGENT' || partyLockRaw === 'CLIENT' ? partyLockRaw : '';
 
   function cfg() {
     const c = window.SITESCOP_SIGN_CONFIG;
@@ -1437,6 +1440,20 @@
       void relayWithFallback(pending, '/viewed', { method: 'POST' }).catch(function () {});
 
       var baseAgreement = enrichAgreementForPortal(pending.publicView, pending);
+      // Prefer ?party= from the emailed link; fall back to pack recipient if set.
+      var lockedParty = partyLock;
+      if (!lockedParty) {
+        var recip = String(pending.signingEmailRecipient || '').toUpperCase();
+        if (recip === 'AGENT' || recip === 'CLIENT') lockedParty = recip;
+      }
+      if (lockedParty === 'AGENT' && agentSigningAvailable(baseAgreement)) {
+        renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'AGENT'), pending);
+        return;
+      }
+      if (lockedParty === 'CLIENT') {
+        renderAgreement(prepareAgreementForSigningParty(baseAgreement, 'CLIENT'), pending);
+        return;
+      }
       if (baseAgreement.canSign && agentSigningAvailable(baseAgreement)) {
         renderSigningPartySelector(baseAgreement, function (party) {
           renderAgreement(prepareAgreementForSigningParty(baseAgreement, party), pending);
